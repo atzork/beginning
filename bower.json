@@ -1,0 +1,12 @@
+{
+  "name": "beginning",
+  "version": "0.0.0",
+  "authors": [
+    "Serje Zork <atzork@gmail.com>"
+  ],
+  "dependencies": {
+    "angular": ">= 1.3.11",
+    "bootstrap": ">= 3.0.0",
+    "angular-ui-bootstrap-bower": ">= 0.12.0"
+  }
+}
