@@ -9,12 +9,13 @@ router.all('*',_auforization,function(req,res,next){
 });
 
 function _auforization(req,res,next){
-  var exeptUrl = ['/login','/registration'];
+  var exeptUrl = ['/login','/registration','/favicon.ico'];
   res.set({
     'Content-Type': 'text/html; charset=utf-8'
   });
 
   //if(!req.session.user && (exeptUrl.indexOf(req.originalUrl)<0)){
+
   if(!req.user && (exeptUrl.indexOf(req.originalUrl)<0)){
     console.error('Не авторизированный пользователь');
     return res.redirect('/login');

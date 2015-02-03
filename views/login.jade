@@ -4,14 +4,15 @@ extends layout
 block content
   .main-centr-container
     h1 Вход
-    form#authorization.form-horizontal(role='form', action='\login', method='post')
+    form#authorization.form-horizontal(role='form', action='/login', method='post', ng-controller='authenticateCtrl', ng-submit='authAction()', ng-disabled)
       .form-group
         label.control-label.col-sm-2(for='auth_login') Логин
         .col-sm-10
-          input#auth_login.form-control(type='text', value='', name='login', placeholder='Логин', autocomplete='0', autofocus='1')
+          input#auth_login.form-control(type='text', ng-model='auth.login', name='login', placeholder='Логин', autocomplete='0', autofocus='1')
       .form-group
         label.control-label.col-sm-2(for='auth_password') Пароль
         .col-sm-10
-          input#auth_password.form-control(type='password', value='', name='password', placeholder='Пароль', autocomplete='0')
+          input#auth_password.form-control(type='password', ng-model='auth.password', name='password', placeholder='Пароль', autocomplete='0')
       .form-group
-        button.btn.btn-default.form-control.col-sm-3.pull-right(type="submit") Вход
+        button.btn.btn-default.col-sm-5.pull-left(type="submit") Вход
+        button.btn.btn-default.col-sm-5.pull-right Регистрация

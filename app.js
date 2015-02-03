@@ -4,6 +4,10 @@
 var express = require('express');
 var path    = require("path");
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var methodOverride = require('method-override');
+
+var logger = require('morgan');
 
 var allRoutes = require('./routes/all');
 var routes = require('./routes/index');
@@ -26,16 +30,18 @@ app.set('view engine','jade');
 
 //app.set('view engine','html');
 
+app.use(logger('dev'));
+app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(methodOverride());
+app.use(sessionStore);
+
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}));
-app.use(sessionStore);
-
 app.use(express.static(path.join(__dirname,'public')));
 app.use(express.static(path.join(__dirname,'bower_components')));
-
 
 app.use('*',allRoutes);
 app.use('/',routes);
