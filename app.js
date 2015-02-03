@@ -21,7 +21,7 @@ var passport = require('passport');
 
 var app = express();
 
-var server  = app.listen(3000,function(){
+var server  = app.listen(1337,function(){
   console.log('Start ' + server.address().port);
 });
 
@@ -48,5 +48,5 @@ app.use('/',routes);
 
 app.use(function(req,res,next){
   var message = 'Страница не найдена(';
-  res.status(400).send(message);
+  res.status(404).send(message);
 });

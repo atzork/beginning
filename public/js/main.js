@@ -44,10 +44,18 @@ app.directive('loginValidator',function() {
     link    : function($scope,elem,attrs,ngModel) {
       ngModel.$validators.login = function(modelValue,viewValue) {
         var value = modelValue || viewValue;
+        var result;
+        console.log('value',value);
         if(!value){
           return;
         }
-        return /^[a-zA-Z0-9]+$/.test(value);
+        result = /^[a-zA-Z0-9]+$/.test(value);
+        if(result){
+          $scope.validationError = false;
+        } else {
+          $scope.validationError = true;
+        }
+        return result;
       }
     }
   }  

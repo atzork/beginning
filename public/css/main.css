@@ -16,14 +16,14 @@ form#authorization{
 }
 form .form-group{position: relative}
 
-form div.error {
+form div.error-validation {
   /*margin: -10px 0 0 0*/
   position: absolute;
   right: 0;
   bottom: -0.7em;
   width: 100%;
 }
-form div.error > div{
+form div.error-validation > div{
   font-family: monospace;
   font-size: x-small;
   color: #FF0000;
