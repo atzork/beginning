@@ -4,11 +4,13 @@ extends layout
 block content
   .main-centr-container
     h1 Вход
-    form#authorization.form-horizontal(role='form', action='/login', method='post', ng-controller='authenticateCtrl', ng-submit='authAction()', ng-disabled)
+    form#authorization.form-horizontal(role='form', name='authForm', method='post', ng-controller='authenticateCtrl', ng-submit='authAction()', novalidate)
       .form-group
         label.control-label.col-sm-2(for='auth_login') Логин
         .col-sm-10
-          input#auth_login.form-control(type='text', ng-model='auth.login', name='login', placeholder='Логин', autocomplete='0', autofocus='1')
+          input#auth_login.form-control(type='text', login-validator, ng-model='auth.login', name='login', placeholder='Логин', autocomplete='0', autofocus='1' required ng-minlength='5' ng-maxlength='30')
+        .error(ng-if='authForm.login.$touched' ng-messages='authForm.login.$error', ng-messages-multiple, ng-messages-include='html/error-messages.html')
+          .col-sm-10(ng-message='required') Необходимо заполнить поле "Логин"
       .form-group
         label.control-label.col-sm-2(for='auth_password') Пароль
         .col-sm-10

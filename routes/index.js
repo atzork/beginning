@@ -10,6 +10,7 @@ router.get('/',function(req,res) {
 });
 
 router.get('/login',function(req,res) {
+  console.log(req.body);
   res.render('login');
 });
 
