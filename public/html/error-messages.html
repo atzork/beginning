@@ -1,7 +1,9 @@
 <!-- remout file: error-messages.html -->
-<div class='col-sm-10' ng-message='required'> Необходимо заполнить поле "Логин" </div>
-<div class='col-sm-10' ng-message='login'> Не корректно заполнено поле "Логин" </div>
-<div class='col-sm-10' ng-message='minlength'> поле "Логин" должно быть минимум 5 символов </div>
-<div class='col-sm-10' ng-message='maxlength'> поле "Логин" должно быть максимум 30 символов </div>
 <div class='col-sm-10' ng-message="recordLoading">Checking database...</div>
-<div class='col-sm-10' ng-message="recordAvailable">The email address is already in use...</div>
+<div class='col-sm-10' ng-message='required'>Field can not be empty</div>
+<div class='col-sm-10' ng-message='login'>Please enter valid data</div>
+<div class='col-sm-10' ng-message='email'>Please enter valid data</div>
+<div class='col-sm-10' ng-message='minlength'>Your value is too short</div>
+<div class='col-sm-10' ng-message='maxlength'>Your value is too long</div>
+<div class='col-sm-10' ng-message="existingEmail">The email address is already in use</div>
+<div class='col-sm-10' ng-message="fieldsNotMatch">The fields must match</div>

@@ -71,11 +71,12 @@ app.directive('loginValidator',function() {
 //
 //}]);
 
-app.controller('authenticateCtrl',['$scope',function($scope){
-  $scope.authAction = function(){
-    console.log('ОТПРАВИТЬ');
-    console.log($scope.auth);
-    $scope.auth.action = '/registration';
+app.controller('authenticateCtrl',['$scope','$http',function($scope,$http){
+  $scope.authAction = function(formData, validity){
+    if(validity){
+      alert('Отправляем:: ' + JSON.stringify(formData));
+      //$http.post('')
+    }
     return false;
   }
 }]);
