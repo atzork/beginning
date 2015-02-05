@@ -2,3 +2,4 @@
 /.idea
 /npm-debug.log
 /bower_components
+/config-local.json

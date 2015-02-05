@@ -12,7 +12,7 @@ var logger = require('morgan');
 var allRoutes = require('./routes/all');
 var routes = require('./routes/index');
 
-var config = require('./config/config');
+var config = require('./config');
 
 var sessionStore = require('./lib/sessionStore');
 
@@ -21,7 +21,7 @@ var passport = require('passport');
 
 var app = express();
 
-var server  = app.listen(1337,function(){
+var server  = app.listen(config.get('server:port'),function(){
   console.log('Start ' + server.address().port);
 });
 
@@ -47,6 +47,6 @@ app.use('*',allRoutes);
 app.use('/',routes);
 
 app.use(function(req,res,next){
-  var message = 'Страница не найдена(';
+  var message = config.get('errorStatus:http-404');
   res.status(404).send(message);
 });

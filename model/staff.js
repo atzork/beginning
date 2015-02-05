@@ -6,7 +6,7 @@ var mongoose = require('../lib/mongoose');
 var Schema = mongoose.Schema;
 
 var schemaUser = new Schema({
-  'login': {
+  'email': {
     type    : String,
     unique  : true,
     required: true,
@@ -22,7 +22,17 @@ var schemaUser = new Schema({
     type    : String,
     required: true,
     trim    : true
+  },
+  // owner, staff, customer
+  'role': {
+    type: String,
+    required: true
   }
+  'staffId': {
+    type: ObjecdId
+    index: {spare: true}
+  }
+
 });
 
 schemaUser.virtual('pas')
