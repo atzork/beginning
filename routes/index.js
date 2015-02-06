@@ -11,10 +11,11 @@ router.get('/',function(req,res) {
 });
 
 router.get('/login',function(req,res) {
-  res.render('login');
+  res.render('login.html');
 });
 router.get('/create-password',function(req,res) {
-  res.render('create-password');
+  //res.render('create-password',{fio:'Вася Пупкин',firstName:'Вася',email:'zz@zz.zz'});
+  res.render('create-password.html',{fio:'Вася Пупкин',firstName:'Вася',email:'zz@zz.zz'});
 });
 
 router.get('/logout',function(req,res) {

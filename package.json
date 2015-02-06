@@ -15,6 +15,7 @@
     "method-override": "~2.3.1",
     "nconf": "~0.7.1",
     "hiredis": "~0.1.17",
-    "connect-redis": "~2.2.0"
+    "connect-redis": "~2.2.0",
+    "ejs": "~2.2.4"
   }
 }

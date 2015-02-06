@@ -1,9 +1,9 @@
 /**
  * Created by sergey on 2/2/15.
  */
-var app = angular.module("app",['ngMessages']);
+var outinzadminApp = angular.module("outinzadminApp",['ngMessages']);
 
-//app.directive('recordAvailabilityValidator',['$http',function($http) {
+//outinzadminApp.directive('recordAvailabilityValidator',['$http',function($http) {
 //  return {
 //    require: 'ngModel',
 //    link: function(scope,element,attrs,ngModel) {
@@ -37,7 +37,7 @@ var app = angular.module("app",['ngMessages']);
 //  }
 //}]);
 
-//app.directive('loginValidator',function() {
+//outinzadminApp.directive('loginValidator',function() {
 //  return {
 //    restrict: 'AE',
 //    require : 'ngModel',
@@ -60,7 +60,7 @@ var app = angular.module("app",['ngMessages']);
 //  }
 //});
 
-app.directive('emailValidation',function(){
+outinzadminApp.directive('emailValidation',function(){
   return {
     restrict: 'AE',
     require : 'ngModel',
@@ -72,7 +72,7 @@ app.directive('emailValidation',function(){
   }
 });
 
-app.controller('authenticateCtrl',['$scope','$http',function($scope,$http){
+outinzadminApp.controller('authenticateCtrl',['$scope','$http',function($scope,$http){
 
   $scope.authPending = false;
   $scope.authAction = function authAction(formData, validity){
@@ -109,4 +109,14 @@ app.controller('authenticateCtrl',['$scope','$http',function($scope,$http){
     console.log('forgotPasswordProcess');
     return false;
   }
+}]);
+
+outinzadminApp.controller('CreatePasswordController',['$scope','$http',function($scope,$http){
+
+  $scope.authAction = function authAction(formData,validity){
+    if(validity){
+      console.log($scope.form);
+    }
+  }
+
 }]);
