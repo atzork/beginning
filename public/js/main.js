@@ -37,46 +37,76 @@ var app = angular.module("app",['ngMessages']);
 //  }
 //}]);
 
-app.directive('loginValidator',function() {
+//app.directive('loginValidator',function() {
+//  return {
+//    restrict: 'AE',
+//    require : 'ngModel',
+//    link    : function($scope,elem,attrs,ngModel) {
+//      ngModel.$validators.login = function(modelValue,viewValue) {
+//        var value = modelValue || viewValue;
+//        var result;
+//        if(!value){
+//          return;
+//        }
+//        result = /^[a-zA-Z0-9]+$/.test(value);
+//        if(result){
+//          $scope.validationError = false;
+//        } else {
+//          $scope.validationError = true;
+//        }
+//        return result;
+//      }
+//    }
+//  }
+//});
+
+app.directive('emailValidation',function(){
   return {
     restrict: 'AE',
     require : 'ngModel',
-    link    : function($scope,elem,attrs,ngModel) {
-      ngModel.$validators.login = function(modelValue,viewValue) {
-        var value = modelValue || viewValue;
-        var result;
-        console.log('value',value);
-        if(!value){
-          return;
-        }
-        result = /^[a-zA-Z0-9]+$/.test(value);
-        if(result){
-          $scope.validationError = false;
-        } else {
-          $scope.validationError = true;
-        }
-        return result;
-      }
+    link    : function($scope,elem,attrs,ngModel){
+      ngModel.$validators.emailNotFound = function(){
+        return true;
+      };
     }
-  }  
+  }
 });
 
-//app.constant("validationClassConfig",{
-//  validClass: "has-success",
-//  invalidClass: "has-error"
-//});
-//
-//app.directive("validationClassFor",["validationClassConfig",function(validationClassConfig){
-//
-//
-//}]);
-
 app.controller('authenticateCtrl',['$scope','$http',function($scope,$http){
-  $scope.authAction = function(formData, validity){
+
+  $scope.authPending = false;
+  $scope.authAction = function authAction(formData, validity){
     if(validity){
-      alert('Отправляем:: ' + JSON.stringify(formData));
-      //$http.post('')
+      $scope.authPending = true;
+      $http.post('/login',formData)
+        .success(function(){
+          console.log('success:: ',arguments);
+          $scope.authPending = false;
+          console.log($scope.authPending);
+        })
+        .error(function(answ,status){
+            $scope.authPending = false;
+            console.log($scope.authPending);
+            if(!answ){
+              return false;
+            }
+            if(answ.typeError && (answ.typeError == 1)){
+              $scope.authForm.email.$setValidity('emailNotFound',false);
+            } else {
+              $scope.authForm.email.$setValidity('emailNotFound',true);
+            }
+          console.log('error:: ',arguments);
+        });
     }
+    return false;
+  };
+
+  $scope.forgotPassword = function forgotPassword(email){
+    $scope.forgotPasswordProcess = false;
+    //$http.post('/forgot-password',{email:email})
+    //  .success()
+    //  .error();
+    console.log('forgotPasswordProcess');
     return false;
   }
 }]);

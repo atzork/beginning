@@ -1,26 +1,110 @@
 @import "reset.css";
 
+body, html{ height: 100%; }
+
+a{color: #198C88;cursor:pointer}
+
 h1{text-transform: uppercase;}
+h1.logo{
+  text-transform: lowercase;
+  font-size: 32px;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+h1.logo .lighter{font-weight:100;font-size:smaller}
+h1.logo.center{text-align: center;margin:100px 0 55px}
+
+.page{
+  position: relative;
+  padding: 0 0 140px;
+  min-height: 100%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
 
 .main-centr-container{
   width: 90%;
+  margin: 0 auto;
   padding: 40px 20px;
   box-sizing: border-box;
 }
 
-form.authorization{
-  width: 60%;
-  min-width: 600px;
+.login-box{
+  background: transparent url("../image/login-bg.jpg") no-repeat 0 0;
+  background-size: cover;
+  -o-background-size: cover; -webkit-background-size: cover;
+  -khtml-background-size: cover; -moz-background-size: cover;
+}
+
+/* add loader */
+.add-loader{position: relative}
+.add-loader:after{
+  content: '';
+  background: transparent url("../image/ajax-loader_small.gif") no-repeat 0 0;
+  width: 15px; height: 15px;
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  margin: -7px 0 0 5px;
+}
+.add-loader.out:after{
+  right: -20px;
+}
+/* add loader end*/
+
+/* FORM LOGIN */
+form.login{
+  background: #FFFFFF;
+  width: 460px;
   display: block;
   margin: 0 auto;
+  padding: 50px 80px 40px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
 }
-form .form-group{position: relative}
+.form-group{position: relative}
+.forgot-password-box{
+  display: inline-block;
+  font-size: smaller;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
+}
+
+.has-error input{color:#a94442}
+
+form.login input{
+  width: 100%;
+  padding: 10px 20px 10px 30px;
+  margin: 0 0 20px;
+  background: none;
+  border: none;
+  border-radius: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  outline: none;
+  font-size: 14px;
+  border-bottom: 1px solid #333;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+form.login input.form-control,
+form.login .has-error  input.form-control{
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+}
 
 form div.error-validation {
-  /*margin: -10px 0 0 0*/
   position: absolute;
   right: 0;
-  bottom: -0.7em;
+  bottom: 0;
   width: 100%;
 }
 form div.error-validation > div{
@@ -29,4 +113,30 @@ form div.error-validation > div{
   color: #FF0000;
   float: right;
   text-align: right;
+}
+/* FORM LOGIN END*/
+
+/* FOOTER */
+/*.footer-compensator{*/
+  /*height: 140px;*/
+  /*width: 100%;*/
+/*}*/
+footer{
+  position: absolute;
+  bottom: 0;
+  height: 140px;
+  width: 100%;
+  padding: 40px 20px 20px;
+  background: #198C88;
+  color: #89C4C2;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+.copyright{
+  width: 100%;
+  text-align: center;
+}
+.copyright .lighter{
+  color: #48A4A1;
 }

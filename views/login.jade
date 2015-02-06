@@ -2,56 +2,60 @@
    Created by sergey on 2/2/15.
 extends layout
 block content
-  .main-centr-container
-    h1 Вход
-    form.authorization.form-horizontal(
-      novalidate = 'novalidate',
-      role='form',
-      name='authForm',
-      method='post',
-      ng-controller='authenticateCtrl',
-      ng-submit='submitted=true; authAction(authForm,authForm.$valid)'
-    )
-      .form-group(ng-class="{'has-error':authForm.email.$invalid && (submitted || authForm.email.$touched)}")
-        label.control-label.col-sm-2(for='auth_email') Email
-        .col-sm-10
-          input#auth_email.form-control(
-            type='email',
-            name='email',
-            placeholder='info@examlpe.com',
-            autocomplete='off',
-            autofocus='off',
-            required='required',
-            email-validator,
-            ng-maxlength='69',
-            ng-model='auth.email',
-            ng-model-options="{debounce:{'default':500,'blur': 1}}"
-          )
-        .error-validation(
-          ng-if='authForm.email.$touched',
-          ng-messages='authForm.email.$error',
-          ng-messages-multiple,
-          ng-messages-include='html/error-messages.html'
+  .page.login-box
+    .wrapper
+      .main-centr-container
+        h1.logo.center Outingz<span class="lighter">admin</span>
+        form.login.form-horizontal(
+          novalidate = 'novalidate',
+          role='form',
+          name='authForm',
+          method='post',
+          ng-controller='authenticateCtrl as ctrl',
+          ng-submit='submitted=true; authAction(login,authForm.$valid)'
         )
-      .form-group(ng-class="{'has-error':authForm.password.$invalid && (submitted || authForm.password.$touched)}")
-        label.control-label.col-sm-2(for='auth_password') Пароль
-        .col-sm-10
-          input#auth_password.form-control(
-            type='password',
-            name='password',
-            placeholder='Пароль',
-            autocomplete='0',
-            required='required',
-            ng-model='auth.password',
-            ng-maxlength='69',
-            ng-model-options="{debounce:{'default':500,'blur': 1}}"
-          )
-          .error-validation(
-            ng-if='authForm.password.$touched',
-            ng-messages='authForm.password.$error',
-            ng-messages-multiple,
-            ng-messages-include='html/error-messages.html'
-          )
-      .form-group
-        button.btn.btn-default.col-sm-5.pull-left(type="submit") Вход
-        button.btn.btn-default.col-sm-5.pull-right Регистрация
+          .form-group(ng-class="{'has-error':authForm.email.$invalid && (submitted || authForm.email.$touched), 'add-loader':authForm.password.$pending}")
+            input#auth_email.form-control(
+              type = 'email',
+              name = 'email',
+              placeholder = 'info@examlpe.com',
+              autocomplete = 'off',
+              autofocus = 'off',
+              required = 'required',
+              email-validation,
+              ng-maxlength = '69',
+              ng-model = 'login.email',
+              ng-model-options = "{debounce:{'default':500,'blur': 1}}"
+            )
+            .error-validation(
+              ng-if='authForm.email.$touched || submitted',
+              ng-messages='authForm.email.$error',
+              ng-messages-multiple,
+              ng-messages-include='html/error-messages.html'
+            )
+          .form-group(ng-class="{'has-error':authForm.password.$invalid && (submitted || authForm.password.$touched), 'add-loader':authForm.password.$pending}")
+            input#auth_password.form-control(
+              type='password',
+              name='password',
+              placeholder='Пароль',
+              autocomplete='0',
+              required='required',
+              ng-model='login.password',
+              ng-maxlength='69',
+              ng-model-options="{debounce:{'default':500,'blur': 1}}"
+            )
+            .error-validation(
+              ng-if='authForm.password.$touched || submitted',
+              ng-messages='authForm.password.$error',
+              ng-messages-multiple,
+              ng-messages-include='html/error-messages.html'
+            )
+          .form-group
+            button.btn.btn-primary(type="submit",ng-class="{'add-loader out':authPending}") Login Now
+          .form-group.forgot-password-box(ng-class="{'add-loader out':forgotPasswordProcess}")
+            | Forgot your password?
+            a(ng-click="authForm.email.$valid && forgotPassword(login.email);",ng-disabled="checked")  Reset it here.
+    //.footer-compensator
+    footer
+      .copyright.
+        Copyright <span class="lighter">&copy;</span>2014 Outingz. All rights reserved.
