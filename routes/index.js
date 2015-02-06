@@ -11,8 +11,10 @@ router.get('/',function(req,res) {
 });
 
 router.get('/login',function(req,res) {
-  console.log(req.body);
   res.render('login');
+});
+router.get('/create-password',function(req,res) {
+  res.render('create-password');
 });
 
 router.get('/logout',function(req,res) {
@@ -31,13 +33,13 @@ router.post('/login', function(req,res,next){
       }
       if (!user) {
         console.log('Не известный пользователь!!!');
-        req.session.messages = [info.message];
+        req.session.messages = [info];
         res
             .set({'Content-Type': 'application/json; charset=utf-8'})
             .status(401)
             .send({
-              typeError: config.get('errorStatus:emailNotFound:typeError'),
-              message: config.get('errorStatus:emailNotFound:message')
+              typeError: info.type,
+              message: info.message
             });
         return;
       }

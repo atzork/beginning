@@ -1,4 +1,6 @@
 {
+  "config-common-enabled": true,
+
   "session": {
     "secret": "Zork-secret",
     "maxAge": 3600,
@@ -10,7 +12,11 @@
     "http-404": "Page not found :(",
     "emailNotFound": {
       "typeError": 1,
-      "message": "Email not found"
+      "message": "Email %s not found"
+    },
+    "wrongPassword": {
+      "typeError": 2,
+      "message": "Wrong password"
     }
   }
 }

@@ -119,6 +119,7 @@ schemaUser.virtual('password')
   });
 
 schemaUser.methods.encryptPassword = function(password){
+  if(!this.salt){this.salt=''} // @todo убрать когда сделаю нормальный функционал!!!
   return crypto.createHmac('sha1',this.salt).update(password).digest('hex');
 };
 

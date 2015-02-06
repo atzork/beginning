@@ -9,7 +9,7 @@ router.all('*',_auforization,function(req,res,next){
 });
 
 function _auforization(req,res,next){
-  var exeptUrl = ['/login','/registration','/favicon.ico'];
+  var exeptUrl = ['/login','/registration','/favicon.ico','/create-password'];
   res.set({
     'Content-Type': 'text/html; charset=utf-8'
   });
