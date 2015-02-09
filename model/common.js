@@ -194,19 +194,19 @@ DbModel.prototype.deleteData = function(where, done) {
   var _this = this;
   this.init();
   this.model.remove(where,function(err,affected){
-  if(err) {
-    console.error('Не удалось удалить данные (%s)',_this.modelName,err);
-    return done(err);
-  }
-  if(!affected) {
-    console.log('Не было удалено ни одной строки из mongodb.%s ',_this.modelName);
-    return done(false,affected);
-  }
-  process.nextTick(function(){
-    _this.redisRemoveData(_this.redisCacheKey,function(){
-      return done(null,affected);
+    if(err) {
+      console.error('Не удалось удалить данные (%s)',_this.modelName,err);
+      return done(err);
+    }
+    if(!affected) {
+      console.log('Не было удалено ни одной строки из mongodb.%s ',_this.modelName);
+      return done(false,affected);
+    }
+    process.nextTick(function(){
+      _this.redisRemoveData(_this.redisCacheKey,function(){
+        return done(null,affected);
+      });
     });
-  });
   });
   return this;
 }; // deleteData
