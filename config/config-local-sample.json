@@ -16,7 +16,7 @@
         "db"    : 1,
         "parser": "hiredis"
       },
-      "cachKey" : "rc",
+      "cacheKey" : "rc",
       "liveTime": 3600
     },
 

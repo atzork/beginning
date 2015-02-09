@@ -4,6 +4,7 @@
 
 var mongoose= require('../lib/mongoose');
 var config  = require('../config');
+var _f      = require('../lib/_f');
 var redis   = require('../lib/redisConnect');
 
 var redisConfig = config.get('db:redis');
@@ -18,7 +19,7 @@ var DbModel = function(modelName){
 DbModel.prototype.initVars = function(modelName){
     this.modelName      = modelName;
     this.redis          = redis;
-    this.redisCachKey   = redisConfig.cachKey + this.modelName;
+    this.redisCacheKey  = redisConfig.cacheKey + this.modelName;
     this.liveTime       = redisConfig.liveTime;
     this.isInitVar      = true;
     return this;
@@ -56,7 +57,7 @@ DbModel.prototype.getById = function(id,done){
   return this;
 };
 
-DbModel.prototype.selectData = function(where,fields,sort,offset,limit,done) {
+DbModel.prototype.selectData = function(done,where,fields,sort,offset,limit) {
     var _this = this;
     var redisKeyObj, redisKey;
     this.init();
@@ -77,8 +78,8 @@ DbModel.prototype.selectData = function(where,fields,sort,offset,limit,done) {
     redisKey = JSON.stringify(redisKeyObj);
 
     // пытаемся получить данные из кеша
-    this.redis.get(redisKey,function(err,data) {
-        if(err || !data) {
+    this.redis.hget(_this.redisCacheKey,redisKey,function(err,row) {
+        if(err || !row) {
             process.nextTick(directGetData());
             return;
         }
@@ -102,22 +103,128 @@ DbModel.prototype.selectData = function(where,fields,sort,offset,limit,done) {
                   return done(false,rows);
               }
 
-              _this.redis.set(redisKey,JSON.stringify(rows),function(err){
-                  if(err){
-                      console.error('Не удалось сохранить в кеше найденные данные (%s - %s)',redisKey,JSON.stringify(rows));
-                  } else {
-                      _this.redis.expire(redisKey,_this.liveTime,function(err){
-                          if(err){
-                              console.error('Не удалось установить время жизни для %s',redisKey,err);
-                          }
-                          return;
-                      });
-                      return done(null,rows);
-                  }
+              process.nextTick(function() {
+                  // сохраняем в REDIS-кеше полученные из mongodb данные
+                  _this.redis.hset(_this.redisCacheKey, redisKey, JSON.stringify(rows), function (err) {
+                      if (err) {
+                          console.error('Не удалось сохранить в кеше найденные данные (%s - %s)', redisKey, JSON.stringify(rows));
+                      }
+                      return done(null, rows);
+                  });
               });
+
+              return rows;
            });
     } // directGetData
-
+    return this;
 }; // selectData
+
+DbModel.prototype.insertData = function(data,done) {
+    var _this = this;
+    this.init(data);
+
+    this.inst.save(function(err,row,affected){
+        if(err) {
+            console.error('Ошибка добавления данных в mongodb ',data,err);
+            return done(err);
+        }
+        if(!affected){
+            return done(false,affected);
+        }
+        _this.redisRemoveData(_this.redisCacheKey,function(err){
+            if(err){}
+            return done(null,affected);
+        });
+        return this;
+    });
+    return this;
+}; // insertData
+
+DbModel.prototype.updateData = function(done,where,set,upsert,multiple){
+    var _this = this;
+    var method, updateOptions;
+
+    this.init();
+
+    if(typeof upsert !== 'boolean') {
+        upsert   = false;
+    }
+    if(typeof multiple !== 'boolean'){
+        multiple = false;
+    }
+
+    updateOptions = {
+        multi   : multiple,
+        upsert  : upsert
+    };
+
+    if(multiple === false){
+        method          = 'findOneAndUpdate';
+        updateOptions   = {};
+    } else {
+        method = 'update';
+    }
+
+    this.model[method](where,set,updateOptions,function(err,affected,row){
+        if(err){
+            console.error('Не удалось обновить данные (%s)', _this.modelName);
+            return done(err);
+        }
+
+        if(!arguments[1] || (arguments[1] === null)){
+            affected = 0;
+        } else if(!_f.isNumber(arguments[1]) || (typeof arguments[1] === 'object')){
+            affected = 1;
+        }
+
+        if(!affected){
+            return done(false,affected);
+        }
+
+        process.nextTick(function() {
+            _this.redisRemoveData(_this.redisCacheKey, function() {
+                return done(null, affected);
+            });
+        });
+    });  // update-method
+    return this;
+}; // updateData
+
+DbModel.prototype.deleteData = function(where, done) {
+    var _this = this;
+    this.init();
+    this.model.remove(where,function(err,affected){
+       if(err) {
+           console.error('Не удалось удалить данные (%s)',_this.modelName,err);
+           return done(err);
+       }
+       if(!affected) {
+           console.log('Не было удалено ни одной строки из mongodb.%s ',_this.modelName);
+           return done(false,affected);
+       }
+       process.nextTick(function(){
+          _this.redisRemoveData(_this.redisCacheKey,function(){
+              return done(null,affected);
+          });
+       });
+    });
+    return this;
+}; // deleteData
+
+DbModel.prototype.redisRemoveData = function(redisCacheKey,done){
+  this.redis.del(redisCacheKey,function(err,affected){
+      if(err){
+          console.error("Не удалось удалить запись из кеша REDIS!! (%s)",redisCacheKey,err);
+          return done(err);
+      }
+      if(!affected){
+          console.log('Записи не были удалены (%s)',redisCacheKey);
+          return done(false,affected);
+      }
+      return done(null,affected);
+  });
+
+  return this;
+}; // redisRemoveData
 
 module.exports = DbModel;
