@@ -15,7 +15,9 @@
       "options" : {
         "db"    : 1,
         "parser": "hiredis"
-      }
+      },
+      "cachKey" : "rc",
+      "liveTime": 3600
     },
 
     "mongodb": {
