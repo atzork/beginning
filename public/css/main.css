@@ -111,7 +111,6 @@ form div.error-validation > div{
   font-family: monospace;
   font-size: x-small;
   color: #FF0000;
-  float: right;
   text-align: right;
 }
 /* FORM LOGIN END*/

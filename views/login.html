@@ -41,7 +41,7 @@
                 class       = "error-validation"
                 ng-if       = "authForm.email.$touched || submitted"
                 ng-messages = "authForm.email.$error"
-                ng-messages-include = "html/error-messages.html"
+                ng-messages-include = "/app/shared/error-messages.html"
                 ng-messages-multiple
               ></div>
             </div>
@@ -65,7 +65,7 @@
                 class         = "error-validation"
                 ng-if         = "authForm.password.$touched || submitted"
                 ng-messages   = "authForm.password.$error"
-                ng-messages-include = "html/error-messages.html"
+                ng-messages-include = "/app/shared/error-messages.html"
                 ng-messages-multiple
               ></div>
             </div>

@@ -9,15 +9,16 @@ var redis   = require('../lib/redisConnect');
 
 var redisConfig = config.get('db:redis');
 
-var DbModel = function(modelName){
+var DbModel = function(modelName,schema){
   this.isInitVar = false;
   if((typeof modelName !== 'undefined') && modelName){
-    this.initVars(modelName);
+    this.initVars(modelName,schema);
   }
   return this;
 };
-DbModel.prototype.initVars = function(modelName){
+DbModel.prototype.initVars = function(modelName,schema){
   this.modelName      = modelName;
+  this.schema         = schema;
   this.redis          = redis;
   this.redisCacheKey  = redisConfig.cacheKey + this.modelName;
   this.liveTime       = redisConfig.liveTime;
@@ -33,7 +34,7 @@ DbModel.prototype.init = function(data){
     console.error('Попытка проинициализировать методы BD без названия схемы (madelName)');
     return false;
   }
-  this.model = mongoose.model(this.modelName);
+  this.model = mongoose.model(this.modelName,this.schema);
   if((typeof data !== 'undefined') && data){
     this.inst = this.model(data)
   }
@@ -171,10 +172,13 @@ DbModel.prototype.updateData = function(done,where,set,upsert,multiple){
       return done(err);
     }
 
+    console.log(set);
+    //console.log('update: %s',method, arguments);
+
     if(!arguments[1] || (arguments[1] === null)){
       affected = 0;
     } else if(!_f.isNumber(arguments[1]) || (typeof arguments[1] === 'object')){
-      affected = 1;
+      //affected = 1;
     }
 
     if(!affected){

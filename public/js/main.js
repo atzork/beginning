@@ -90,10 +90,11 @@ outinzadminApp.controller('authenticateCtrl',['$scope','$http',function($scope,$
             if(!answ){
               return false;
             }
+
             if(answ.typeError && (answ.typeError == 1)){
               $scope.authForm.email.$setValidity('emailNotFound',false);
             } else {
-              $scope.authForm.email.$setValidity('emailNotFound',true);
+              $scope.authForm.email.$setValidity();
             }
           console.log('error:: ',arguments);
         });
@@ -111,12 +112,4 @@ outinzadminApp.controller('authenticateCtrl',['$scope','$http',function($scope,$
   }
 }]);
 
-outinzadminApp.controller('CreatePasswordController',['$scope','$http',function($scope,$http){
 
-  $scope.authAction = function authAction(formData,validity){
-    if(validity){
-      console.log($scope.form);
-    }
-  }
-
-}]);

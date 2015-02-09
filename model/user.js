@@ -110,6 +110,7 @@ schemaUser.virtual('fullName')
 
 schemaUser.virtual('password')
   .set(function(password){
+console.log('Create PASSWORD:: ',password);
     this._plainPassword = password;
     this.salt           = '' + Math.random();
     this.hashedPassword = this.encryptPassword(password);
@@ -128,7 +129,7 @@ schemaUser.methods.checkPassword = function(password){
 };
 
 var DbModel = require('./common');
-var UserInst= new DbModel('User');
+var UserInst= new DbModel('User',schemaUser);
 
 exports.User = mongoose.model('User',schemaUser);
-exports.user = UserInst;
+exports.UserInst = UserInst;

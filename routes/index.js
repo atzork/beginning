@@ -14,14 +14,43 @@ router.get('/login',function(req,res) {
   res.render('login.html');
 });
 router.get('/create-password/:id([0-9a-zA-Z]{1,32})',function(req,res,next) {
-  var user = require('../model/user').user;
-  user.getById(req.params.id,function(err,user){
+  var UserInst = require('../model/user').UserInst;
+  UserInst.getById(req.params.id,function(err,user){
     if(err || !user){
       return next();
     }
     console.log('Получен пользователь:: ',user);
     return res.render('create-password.html',{fio:user.fullName,firstName:user.firstName,email:user.email});
   });
+});
+                                                
+router.post('/create-password',function(req,res,next) {
+  console.log('POST - /create-password');
+  setTimeout(function(){  // <-- для визуализации иконки процесса загрузки
+    var UserInst = require('../model/user').UserInst;
+
+
+
+    UserInst.updateData(done,{email:req.body.email},{$set:{password:req.body.password}});
+    //UserInst.updateData(done,{email:req.body.email},{$set:{salt:req.body.password}});
+    function done(err,affected){
+      if(err){
+        return next(err);
+      }
+      res.set({'Content-Type': 'application/json; charset=utf-8'});
+      if(!affected){
+        console.log('Неизвестный пользователь');
+        res
+          .status(401)
+          .send({
+            typeError : config.get('errorStatus:emailNotFound:typeError'),
+            message   : config.get('errorStatus:emailNotFound:message').replace('%s'.req.body.email)
+          });
+      }
+      console.log('Результат генерации пароля:: ',affected);
+      return res.send({status:'ok'});
+    }
+  })
 });
 
 router.get('/logout',function(req,res) {
@@ -31,7 +60,7 @@ router.get('/logout',function(req,res) {
 
 router.post('/login', function(req,res,next){
   console.log('POST - login');
-  setTimeout(function() {
+  setTimeout(function() { // <-- для визуализации иконки процесса загрузки
     passport.authenticate('local', function (err, user, info) {
       console.log('passport.authenticate', arguments);
       if (err) {

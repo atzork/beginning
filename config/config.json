@@ -18,6 +18,10 @@
       "typeError": 2,
       "message": "Wrong password"
     },
+    "wrongFormatPassword": {
+      "typeError": 21,
+      "message": "Wrong format password"
+    },
     "redisFaultConnect": {
       "typeError": 3,
       "message": "Unable to connect to the base REDIS %s"
