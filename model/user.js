@@ -103,9 +103,9 @@ var schemaUser = new Schema({
   }]
 });
 
-schemaUser.virtual('nameFull')
+schemaUser.virtual('fullName')
   .get(function(){
-    return this.firstName + this.lastName;
+    return this.firstName + ' ' + this.lastName;
   });
 
 schemaUser.virtual('password')
@@ -127,4 +127,8 @@ schemaUser.methods.checkPassword = function(password){
   return this.encryptPassword(password) === this.hashedPassword;
 };
 
+var DbModel = require('./common');
+var UserInst= new DbModel('User');
+
 exports.User = mongoose.model('User',schemaUser);
+exports.user = UserInst;

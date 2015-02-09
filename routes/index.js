@@ -13,9 +13,15 @@ router.get('/',function(req,res) {
 router.get('/login',function(req,res) {
   res.render('login.html');
 });
-router.get('/create-password',function(req,res) {
-  //res.render('create-password',{fio:'Вася Пупкин',firstName:'Вася',email:'zz@zz.zz'});
-  res.render('create-password.html',{fio:'Вася Пупкин',firstName:'Вася',email:'zz@zz.zz'});
+router.get('/create-password/:id([0-9a-zA-Z]{1,32})',function(req,res,next) {
+  var user = require('../model/user').user;
+  user.getById(req.params.id,function(err,user){
+    if(err || !user){
+      return next();
+    }
+    console.log('Получен пользователь:: ',user);
+    return res.render('create-password.html',{fio:user.fullName,firstName:user.firstName,email:user.email});
+  });
 });
 
 router.get('/logout',function(req,res) {

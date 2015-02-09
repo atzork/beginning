@@ -9,14 +9,32 @@ router.all('*',_auforization,function(req,res,next){
 });
 
 function _auforization(req,res,next){
-  var exeptUrl = ['/login','/registration','/favicon.ico','/create-password'];
+  var exeptUrl  = ['/login','/registration','/favicon.ico','/create-password'];
+  var maxExpUrl = exeptUrl.length;
+  var regexp    = /^.$/;
+  var resolve   = false;
   res.set({
     'Content-Type': 'text/html; charset=utf-8'
   });
 
-  //if(!req.session.user && (exeptUrl.indexOf(req.originalUrl)<0)){
+  //console.log('Урл на входе:: ', req.originalUrl);
+  if(exeptUrl.indexOf(req.originalUrl)<0) {
+    for (var i = 0; i < maxExpUrl; i += 1) {
+      regexp = new RegExp('^' + exeptUrl[i] + '.*', 'i');
+      //console.log('Проверем:: ',exeptUrl[i]);
+      //console.log('regexp:: ',regexp);
+      if (regexp.test(req.originalUrl)) {
+        resolve = true;
+        break;
+      }
+    }
+  } else {
+    resolve = true;
+  }
 
-  if(!req.user && (exeptUrl.indexOf(req.originalUrl)<0)){
+  //console.log('Разрешено ли? ',resolve);
+  //console.log('начинаем проверку:: ',req.originalUrl);
+  if(!req.user && !resolve){
     console.error('Не авторизированный пользователь');
     return res.redirect('/login');
   } else {
