@@ -1,5 +1,5 @@
 /node_modules
 /.idea
 /npm-debug.log
-/bower_components
-/config/config-local.json
+/oz.public/libs
+/oz.config/env/config-local.json

@@ -9,14 +9,14 @@ var methodOverride = require('method-override');
 
 var logger = require('morgan');
 
-var allRoutes = require('./routes/all');
-var routes = require('./routes/index');
+var allRoutes = require('./oz.routes/all');
+var routes = require('./oz.routes/index');
 
-var config = require('./config');
+var config = require('./oz.configs/env');
 
-var sessionStore = require('./lib/sessionStore');
+var sessionStore = require('./oz.configs/sessionStore');
 
-var pass = require('./lib/passport');
+var pass = require('./oz.configs/passport');
 var passport = require('passport');
 
 var app = express();
@@ -25,10 +25,7 @@ var server  = app.listen(config.get('server:port'),function(){
   console.log('Start ' + server.address().port);
 });
 
-app.set('views',path.join(__dirname,'views'));
-//app.set('view engine','jade');
-
-//app.set('view engine','html');
+app.set('views',path.join(__dirname,'oz.public'));
 app.engine('html',require('ejs').renderFile);
 app.set('view engine','ejs');
 
@@ -42,8 +39,7 @@ app.use(sessionStore);
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(express.static(path.join(__dirname,'public')));
-app.use(express.static(path.join(__dirname,'bower_components')));
+app.use(express.static(path.join(__dirname,'oz.public')));
 
 app.use('*',allRoutes);
 app.use('/',routes);
