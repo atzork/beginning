@@ -9,7 +9,7 @@ router.all('*',_auforization,function(req,res,next){
 });
 
 function _auforization(req,res,next){
-  var exeptUrl  = ['/login','/registration','/favicon.ico','/create-password'];
+  var exeptUrl  = ['/login','/registration','/favicon.ico','/create-password','/index'];
   var maxExpUrl = exeptUrl.length;
   var regexp    = /^.$/;
   var resolve   = false;
@@ -36,7 +36,7 @@ function _auforization(req,res,next){
   //console.log('начинаем проверку:: ',req.originalUrl);
   if(!req.user && !resolve){
     console.error('Не авторизированный пользователь');
-    return res.redirect('components/login/login.html');
+    return res.redirect('/login');
   } else {
     return next();
   }

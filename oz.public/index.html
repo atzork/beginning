@@ -10,7 +10,13 @@
 </head>
 <body ng-app="oz">
 
-  <section ui-view></section>
+  <div class="page">
+    <div class="wrapper">
+      <header header-block></header>
+      <section ui-view></section>
+    </div> <!-- .wrapper -->
+    <footer footer-block></footer>
+  </div> <!-- .page -->
 
   <script type='text/javascript' src='/libs/angular/angular.min.js'></script>
   <script type='text/javascript' src='/libs/angular-messages/angular-messages.min.js'></script>
@@ -24,5 +30,6 @@
 
   <script type="text/javascript" src="/components/createPassword/createPasswordController.js"></script>
   <script type="text/javascript" src="/components/createPassword/createPasswordDirective.js"></script>
+
 </body>
 </html>

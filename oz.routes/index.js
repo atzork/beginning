@@ -8,8 +8,14 @@ var config = require('../oz.configs/env');
 var _ = require('underscore');
 
 router.get('/',function(req,res) {
-  res.render('components/index');
+  console.log('INDEX');
+  res.render('index.html');
 });
+router.get('/index',function(req,res) {
+  console.log('INDEX');
+  res.render('index.html');
+});
+
 
 router.get('/login',function(req,res) {
   res.render('components/login/login.html');
