@@ -14,6 +14,10 @@
       "typeError": 1,
       "message": "Email %s not found"
     },
+    "userNotFound": {
+      "typeError": 11,
+      "message": "User is not found"
+    },
     "wrongPassword": {
       "typeError": 2,
       "message": "Wrong password"

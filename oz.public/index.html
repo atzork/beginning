@@ -6,21 +6,32 @@
 
   <link type="text/css" rel='stylesheet' href='/libs/bootstrap/dist/css/bootstrap.css' />
   <link type="text/css" rel='stylesheet' href='/assets/css/main.css' />
-
+  <base href="/">
 </head>
 <body ng-app="oz">
 
   <div class="page">
     <div class="wrapper">
       <header header-block></header>
-      <section ui-view></section>
+      <nav>
+        <ul>
+          <!--<li><a ui-sref="home">Home</a></li>-->
+          <li><a ui-sref="login">Login</a></li>
+          <li><a ui-sref="create-password">Create password</a></li>
+        </ul>
+      </nav>
+      <div ui-view>zzz</div>
     </div> <!-- .wrapper -->
     <footer footer-block></footer>
   </div> <!-- .page -->
 
+
+
+  <!--<script type="text/javascript" src="/underscore/underscore-min.js"></script>-->
   <script type='text/javascript' src='/libs/angular/angular.min.js'></script>
-  <script type='text/javascript' src='/libs/angular-messages/angular-messages.min.js'></script>
   <script type="text/javascript" src="/libs/angular-ui-router/release/angular-ui-router.min.js"></script>
+
+  <script type='text/javascript' src='/libs/angular-messages/angular-messages.min.js'></script>
   <script type='text/javascript' src='/libs/angular-ui-bootstrap-bower/ui-bootstrap.min.js'></script>
 
   <script type="text/javascript" src="/components/app.js"></script>

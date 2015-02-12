@@ -40,6 +40,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(express.static(path.join(__dirname,'oz.public')));
+app.use(express.static(path.join(__dirname,'node_modules')));
 
 app.use('*',allRoutes);
 app.use('/',routes);

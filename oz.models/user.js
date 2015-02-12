@@ -112,7 +112,7 @@ schemaUser.virtual('password')
   .set(function(password){
 console.log('Create PASSWORD:: ',password);
     this._plainPassword = password;
-    this.salt           = '' + Math.random();
+    this.salt           = '' + Math.random()*10;
     this.hashedPassword = this.encryptPassword(password);
   })
   .get(function(){
@@ -121,6 +121,7 @@ console.log('Create PASSWORD:: ',password);
 
 schemaUser.methods.encryptPassword = function(password){
   if(!this.salt){this.salt=''} // @todo убрать когда сделаю нормальный функционал!!!
+  console.log('encryptPassword -- password:: ',password);
   return crypto.createHmac('sha1',this.salt).update(password).digest('hex');
 };
 
@@ -130,6 +131,30 @@ schemaUser.methods.checkPassword = function(password){
 
 var DbModel = require('./common');
 var UserInst= new DbModel('User',schemaUser);
+
+//console.log('UserInst:: ',UserInst);
+console.log('UserInst:: ',typeof UserInst);
+UserInst.createPassword = function(id, role, password, rePassword,done) {
+  console.log('createPassword');
+  this.getById(id,function(err,user){
+    if(err){
+      return done(err);
+    }
+    if(!user){
+      return done(false,user);
+    }
+    console.log(user);
+    user.password = password;
+    user.role = role;
+    user.save(function(err){
+      if(err){
+        console.error(err);
+      }
+      return done(null,user);
+    });
+
+  });
+};
 
 exports.User = mongoose.model('User',schemaUser);
 exports.UserInst = UserInst;

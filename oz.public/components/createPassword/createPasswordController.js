@@ -5,11 +5,11 @@
 
 // oz.CreatePasswordController
 oz.controller('CreatePasswordController',['$scope','$http',function($scope,$http){
-
   $scope.authPending = false;
   $scope.createPasswordAction = function createPasswordAction(formData,validity) {
     if(validity){
-      console.log($scope.form);
+      console.log(formData);
+
       $scope.authPending = true;
       $http.post('/create-password',formData)
         .success(function() {
@@ -33,7 +33,7 @@ oz.controller('CreatePasswordController',['$scope','$http',function($scope,$http
                 break;
             }
           } else {
-            $scope.authForm.$setPristine(true);
+            //$scope.authForm.$setPristine(true);
           }
 
           //console.log($scope.authForm.password);
@@ -43,4 +43,4 @@ oz.controller('CreatePasswordController',['$scope','$http',function($scope,$http
     } // form validity?
   }; // authAction
 
-}]); // CreatePasswordController
+}]); // CreatePasswordController,,,

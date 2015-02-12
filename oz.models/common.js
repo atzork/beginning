@@ -14,7 +14,7 @@ var DbModel = function(modelName,schema){
   if((typeof modelName !== 'undefined') && modelName){
     this.initVars(modelName,schema);
   }
-  return this;
+  //return this;
 };
 DbModel.prototype.initVars = function(modelName,schema){
   this.modelName      = modelName;
@@ -44,7 +44,7 @@ DbModel.prototype.init = function(data){
 DbModel.prototype.getById = function(id,done){
   var _this = this;
   this.init();
-  this.model.findOne({_id:id},function(err,data){
+  this.model.findById(id,function(err,data){
     if(err){
       console.error('Not found by %s',id,err);
       return done(err);
