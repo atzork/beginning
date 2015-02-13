@@ -101,20 +101,23 @@ form.login .has-error  input.form-control{
   -webkit-box-shadow: none;
 }
 
-form div.error-validation {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-}
-form div.error-validation > div{
-  font-family: monospace;
-  font-size: x-small;
-  color: #FF0000;
-  text-align: right;
-  display: inline-block;
-  float: right;
-}
+  /* error validation block */
+  form .error-validation {
+    position: absolute;
+    right: 0; bottom: 0;
+    display: inline-block;
+  }
+  form .error-validation .error-item{
+    font-family: monospace;
+    font-size: x-small;
+    color: #FF0000;
+    text-align: right;
+  }
+  input.ng-invalid{
+    box-shadow:1px 1px 10px rgba(176, 0, 64, 0.6);-moz-box-shadow:1px 1px 10px rgba(176, 0, 64, 0.6);
+    -o-box-shadow:1px 1px 10px rgba(176, 0, 64, 0.6);-webkit-box-shadow:1px 1px 10px rgba(176, 0, 64, 0.6);
+  }
+  /* error validation block end*/
 /* FORM LOGIN END*/
 
 /* FOOTER */
