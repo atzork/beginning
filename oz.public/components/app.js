@@ -40,6 +40,42 @@ oz.config(['$stateProvider', '$locationProvider', '$urlRouterProvider',function(
   * Directive-s
   */
 
+// Validations
+// -----------
+
+// oz.compareTo
+oz.directive('compareTo',function(){
+  return {
+    require: 'ngModel',
+    scope: {
+      otherModel: '=compareTo'
+    },
+    link: function(scope,elem,attrs,ngModel) {
+
+      ngModel.$validators.compareTo = function(modelValue, viewValue) {
+        var result = true;
+        var value = modelValue || viewValue;
+        var otherModelValue = scope.otherModel.$modelValue || scope.otherModel.$viewValue;
+        result = value === otherModelValue;
+        scope.otherModel.$setValidity('compareTo',result);
+        return result;
+      };
+
+      scope.$watch("otherModel.$modelValue || otherModel.$viewValue",function() {
+        ngModel.$validate();
+      });
+
+    } // link
+  }
+});
+
+// Validations END
+// ============
+
+
+// templates
+// ---------
+
 // Footer block
 oz.directive('footerBlock',function(){
   return {
@@ -53,3 +89,6 @@ oz.directive('headerBlock',function(){
     templateUrl: "/components/shared/header/header.html"
   }
 });
+
+// templates END
+// =============
