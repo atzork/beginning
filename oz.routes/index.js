@@ -16,10 +16,10 @@ router.get('/index',function(req,res) {
   res.render('index.html');
 });
 
-
 router.get('/login',function(req,res) {
   res.render('components/login/login.html');
 });
+
 router.get('/create-password/:id([0-9a-zA-Z]{1,32})',function(req,res,next) {
   var UserInst = require('../oz.models/user').UserInst;
   console.log(req.params.id);
@@ -34,18 +34,6 @@ router.get('/create-password/:id([0-9a-zA-Z]{1,32})',function(req,res,next) {
       _id: user._id
     });
   });
-
-  /*
-  UserInst.getById(req.params.id,function(err,user){
-    if(err || !user){
-      return next();
-    }
-    console.log('Получен пользователь:: ',user);
-    return res.render('components/createPassword.html',{fio:user.fullName,firstName:user.firstName,email:user.email});
-  });
-  */
-  //return res.render('components/createPassword.html',{fio:user.fullName,firstName:user.firstName,email:user.email});
-
 });
 
 router.post('/create-password',function(req,res,next) {
@@ -78,15 +66,10 @@ router.post('/create-password',function(req,res,next) {
   });
 });
 
-  //UserInst.selectData(function(err,user){
-  //  if(!err){
-  //
-  //  }
-  //},{email:req.body.email});
-
 router.get('/logout',function(req,res) {
   req.logout();
-  res.redirect('/components/login/login.html');
+  req.session.messages = [];
+  res.redirect('login.html');
 });
 
 router.post('/login', function(req,res,next){
