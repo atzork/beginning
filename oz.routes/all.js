@@ -4,12 +4,12 @@
 var express = require('express');
 var router = express.Router();
 
-router.all('*',_auforization,function(req,res,next){
+router.all('*',_auforization,_isAjaxReq,function(req,res,next){
   next();
 });
 
 function _auforization(req,res,next){
-  var exeptUrl  = ['/login','/registration','/favicon.ico','/create-password','/index'];
+  var exeptUrl  = ['/login','/registration','/favicon.ico','/api/create-password','/index'];
   var maxExpUrl = exeptUrl.length;
   var regexp    = /^.$/;
   var resolve   = false;
@@ -40,6 +40,14 @@ function _auforization(req,res,next){
   } else {
     return next();
   }
+}
+
+function _isAjaxReq(req,res,next) {
+  console.log('---------- проверка на AJAX ----------');
+  console.log(req.originalUrl);
+  console.log('Ajax? ::',req.xhr);
+  console.log('======================================');
+  return next();
 }
 
 module.exports = router;

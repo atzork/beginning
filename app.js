@@ -10,6 +10,7 @@ var methodOverride = require('method-override');
 var logger = require('morgan');
 
 var allRoutes = require('./oz.routes/all');
+var apiRoutes = require('./oz.routes/api');
 var routes = require('./oz.routes/index');
 
 var config = require('./oz.configs/env');
@@ -43,9 +44,9 @@ app.use(express.static(path.join(__dirname,'oz.public')));
 app.use(express.static(path.join(__dirname,'node_modules')));
 
 app.use('*',allRoutes);
+app.use('/api/',apiRoutes);
 app.use('/',routes);
 
 app.use(function(req,res,next){
-  var message = config.get('errorStatus:http-404');
-  res.status(404).send(message);
+  res.render('index.html');
 });
