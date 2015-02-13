@@ -23,8 +23,8 @@ oz.controller('authenticateCtrl',['$scope','$http',function($scope,$http){
             return false;
           }
 
+          $scope.allowSubmit = false;
           if(answ.typeError){
-            $scope.allowSubmit = false;
 
             if(answ.typeError == 1) {
               $scope.authForm.email.$setValidity('emailNotFound',false);
