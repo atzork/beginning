@@ -14,6 +14,12 @@ passport.serializeUser(function(user,done){
 passport.deserializeUser(function(id,done){
   User.findById(id,function(err,user){
     console.log('deserializeUser',arguments);
+    if(err){
+      console.error('DeserializeUser failed:: ',err);
+    }
+    if(!user){
+      console.error('User empty after DeserializeUser', user);
+    }
     done(err,user);
   });
 });
