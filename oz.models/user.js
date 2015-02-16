@@ -132,8 +132,6 @@ schemaUser.methods.checkPassword = function(password){
 var DbModel = require('./common');
 var UserInst= new DbModel('User',schemaUser);
 
-//console.log('UserInst:: ',UserInst);
-console.log('UserInst:: ',typeof UserInst);
 UserInst.createPassword = function(id, role, password, rePassword,done) {
   console.log('createPassword');
   this.getById(id,function(err,user){

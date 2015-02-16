@@ -4,8 +4,6 @@
 var nconf = require('nconf');
 var path = require('path');
 
-console.log('1111');
-
 nconf
   .argv()
   .env()

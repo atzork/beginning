@@ -44,7 +44,7 @@ app.use(express.static(path.join(__dirname,'oz.public')));
 app.use(express.static(path.join(__dirname,'node_modules')));
 
 app.use('*',allRoutes);
-app.use('/api/',apiRoutes);
+app.use('/api',apiRoutes);
 app.use('/',routes);
 
 app.use(function(req,res,next){

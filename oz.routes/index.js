@@ -5,7 +5,7 @@ var express = require('express');
 var passport = require('passport');
 var router = express.Router();
 var config = require('../oz.configs/env');
-var _ = require('underscore');
+//var _ = require('underscore'); loudashe
 
 router.get('/',function(req,res) {
   console.log('INDEX');
@@ -16,13 +16,10 @@ router.get('/index',function(req,res) {
   res.render('index.html');
 });
 
-
 router.get('/logout',function(req,res) {
   req.logout();
   req.session.messages = [];
-  res.redirect('login.html');
+  res.redirect('login');
 });
-
-
 
 module.exports = router;

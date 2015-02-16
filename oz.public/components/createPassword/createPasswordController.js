@@ -11,7 +11,7 @@ oz.controller('CreatePasswordController',['$scope','$http',function($scope,$http
       console.log(formData);
 
       $scope.authPending = true;
-      $http.post('/create-password',formData)
+      $http.post('/api/create-password',formData)
         .success(function() {
           $scope.authPending = false;
           console.log('Success create password');

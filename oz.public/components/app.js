@@ -6,11 +6,10 @@ var oz = angular.module('oz', ['ngMessages','ui.router']);
 
 oz.config(['$stateProvider', '$locationProvider', '$urlRouterProvider',function($stateProvider, $locationProvider, $urlRouterProvider) {
   $stateProvider
-    .state('home', {
-      url: '/home',
-
+    .state('dashboard', {
+      url: '/dashboard',
       views: {
-        '': {templateUrl: '/components/home/home.html'},
+        '': {templateUrl: '/components/dashboard/dashboard.html'},
         'header': {templateUrl:'/components/shared/header/header.html'},
         'footer': {templateUrl: '/components/shared/footer/footer.html'}
       }
@@ -21,14 +20,22 @@ oz.config(['$stateProvider', '$locationProvider', '$urlRouterProvider',function(
     })
     .state('login', {
       url: '/login',
-      templateUrl: '/api/login'
+      views: {
+        '': {templateUrl: '/api/login'},
+        'footer': {templateUrl: '/components/shared/footer/footer.html'}
+      }
     })
     .state('create-password', {
-      //url: '/create-password/:code',
-      url: '/create-password/',
-      templateUrl: '/api/create-password/54d490d0e237ecbaaf7f684a',
-      controller: function($scope, $stateParams) {
-        console.log($stateParams);
+      url: '/create-password/:code',
+      views: {
+        '' : {
+          //54d490d0e237ecbaaf7f684a
+          templateUrl: function(params){
+            return '/api/create-password/' + params.code;
+          }
+        },
+        'header': {templateUrl:'/components/shared/header/header.html'},
+        'footer': {templateUrl: '/components/shared/footer/footer.html'}
       }
     });
 
@@ -36,12 +43,8 @@ oz.config(['$stateProvider', '$locationProvider', '$urlRouterProvider',function(
 
     // url router provider
     $urlRouterProvider
-      .when('','/index')
-      .when('/home','/')
-      .when('/create-password','/create-password')
-      .otherwise('home')
-
-
+      //.when('/dashboard','/')
+      .otherwise('dashboard');
 }]);
 
 

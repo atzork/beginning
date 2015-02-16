@@ -4,17 +4,16 @@
  */
 
 // oz.authenticateCtrl
-oz.controller('authenticateCtrl',['$scope','$http',function($scope,$http){
+oz.controller('authenticateCtrl',['$scope','$http','$location',function($scope,$http,$location){
 
   $scope.authPending = false;
   $scope.authAction = function authAction(formData, validity){
     if(validity){
       $scope.authPending = true;
-      $http.post('/login',formData)
+      $http.post('/api/login',formData)
         .success(function(){
-          console.log('success:: ',arguments);
           $scope.authPending = false;
-          console.log($scope.authPending);
+          $location.path('/dashboard');
         })
         .error(function(answ,status){
           $scope.authPending = false;

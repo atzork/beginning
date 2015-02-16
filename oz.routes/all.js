@@ -9,7 +9,7 @@ router.all('*',_auforization,_isAjaxReq,function(req,res,next){
 });
 
 function _auforization(req,res,next){
-  var exeptUrl  = ['/login','/registration','/favicon.ico','/api/create-password','/index'];
+  var exeptUrl  = ['/index','/login','/create-password','/registration','/favicon.ico','/api/login','/api/registration','/api/create-password'];
   var maxExpUrl = exeptUrl.length;
   var regexp    = /^.$/;
   var resolve   = false;
@@ -40,7 +40,7 @@ function _auforization(req,res,next){
   } else {
     return next();
   }
-}
+} // _auforization()
 
 function _isAjaxReq(req,res,next) {
   console.log('---------- проверка на AJAX ----------');
