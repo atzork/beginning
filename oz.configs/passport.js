@@ -7,13 +7,11 @@ var LocalStrategy = require('passport-local').Strategy;
 var User = require('../oz.models/user').User;
 
 passport.serializeUser(function(user,done){
-  console.log('serializeUser',arguments);
   done(null,user.id)
 });
 
 passport.deserializeUser(function(id,done){
   User.findById(id,function(err,user){
-    console.log('deserializeUser',arguments);
     if(err){
       console.error('DeserializeUser failed:: ',err);
     }
