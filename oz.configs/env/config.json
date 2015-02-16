@@ -10,6 +10,7 @@
   },
   "errorStatus": {
     "http-404": "Page not found :(",
+    "error-500": "Server error",
     "emailNotFound": {
       "typeError": 1,
       "message": "Email %s not found"
