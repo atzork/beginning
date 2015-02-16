@@ -8,9 +8,9 @@
   <link type="text/css" rel='stylesheet' href='/assets/css/main.css' />
   <base href="/">
 </head>
-<body ng-app="oz">
+<body ng-app="oz" ng-controller="mainController">
 
-  <div class="page">
+  <div class="page {{pageClass}}">
     <div class="wrapper">
       <!--<header header-block></header>-->
       <header ui-view="header"></header>

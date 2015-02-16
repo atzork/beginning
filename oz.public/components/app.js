@@ -1,5 +1,8 @@
 var oz = angular.module('oz', ['ngMessages','ui.router']);
 
+oz.controller('mainController',['$scope',function($scope){
+}]);
+
 /**
  * Routers
  */
@@ -23,7 +26,11 @@ oz.config(['$stateProvider', '$locationProvider', '$urlRouterProvider',function(
       views: {
         '': {templateUrl: '/api/login'},
         'footer': {templateUrl: '/components/shared/footer/footer.html'}
-      }
+      },
+      controller: ['$scope',function($scope) {
+        $scope.pageClass = 'login-box';
+        console.log($scope);
+      }]
     })
     .state('create-password', {
       url: '/create-password/:code',
