@@ -17,6 +17,11 @@
     "connect-redis": "~2.2.0",
     "ejs": "~2.2.4",
     "redis": "^0.12.1",
-    "underscore": "~1.7.0"
+    "underscore": "~1.7.0",
+    "eslint": "~0.14.1",
+    "gulp-eslint": "~0.4.2"
+  },
+  "devDependencies": {
+    "gulp": "~3.8.11"
   }
 }
