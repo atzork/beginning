@@ -1,0 +1,2 @@
+npm i eslint eslint/eslint -S
+npm install --save-dev pre-commit

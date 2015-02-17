@@ -1,12 +1,16 @@
 /**
  * Created by sergey on 2/16/15.
  */
-var gulp = require("gulp");
+var gulp = require('gulp');
+var eslint = require('gulp-eslint');
 
-gulp.task("default", function() {
-
+gulp.task('lint', function() {
+  return gulp.src(['js/**/*.js'])
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failOnError());
 });
 
-gulp.task("lint", function() {
+gulp.task('default', ['lint'], function() {
 
 });
