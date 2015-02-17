@@ -26,6 +26,6 @@
     "pre-commit": "~1.0.4"
   },
   "pre-commit": [
-    "gulp lint"
+    "lint"
   ]
 }
