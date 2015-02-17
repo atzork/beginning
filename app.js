@@ -29,6 +29,7 @@ server = app.listen(config.get('server:port'), function () {
 });
 
 
+
 app.set('views', path.join(__dirname, 'oz.public'));
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
