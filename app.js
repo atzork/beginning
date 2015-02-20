@@ -4,6 +4,7 @@
 'use strict';
 var express = require('express');
 var path = require('path');
+var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var methodOverride = require('method-override');
@@ -31,7 +32,7 @@ server = app.listen(config.get('server:port'), function () {
 app.set('views', path.join(__dirname, 'oz.public'));
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
-
+app.use(favicon(path.join(__dirname, config.get('favIcon'))));
 app.use(logger('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());

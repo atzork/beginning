@@ -12,11 +12,9 @@
 
   <div class="page {{pageClass}}">
     <div class="wrapper">
-      <!--<header header-block></header>-->
-      <header ui-view="header"></header>
+      <header ng-hide="isNoHeader" ui-view="header"></header>
       <div ui-view>zzz</div>
     </div> <!-- .wrapper -->
-    <!--<footer footer-block></footer>-->
     <footer ui-view="footer"></footer>
   </div> <!-- .page -->
 

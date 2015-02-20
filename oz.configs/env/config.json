@@ -7,6 +7,7 @@
     "saveUninitialized": true,
     "resave": true
   },
+  "favIcon": "/oz.public/assets/image/favicon.ico",
   "errorStatus": {
     "http-404": "Page not found :(",
     "error-500": "Server error",

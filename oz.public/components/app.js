@@ -3,6 +3,7 @@ var oz = angular.module('oz', ['ngMessages', 'ui.router']);
 oz.run(['$rootScope', function($rootScope) {
   $rootScope.$on('$stateChangeStart', function() {
     $rootScope.pageClass = '';
+    $rootScope.isNoHeader = false;
   });
 }]);
 
@@ -17,31 +18,39 @@ oz.config([
   '$stateProvider', '$locationProvider', '$urlRouterProvider',
   function($stateProvider, $locationProvider, $urlRouterProvider) {
     $stateProvider
-      .state('dashboard', {
-        url: '/dashboard',
+      .state('app', {
+        abstract: true,
+        url: '',
         views: {
-          '': {templateUrl: '/components/dashboard/dashboard.html'},
-          header: {templateUrl: '/components/shared/header/header.html'},
-          footer: {templateUrl: '/components/shared/footer/footer.html'}
+          '@': {
+            template: '<ui-view />'
+          },
+          header: {
+            templateUrl: '/components/shared/header/header.html'
+          },
+          footer: {
+            templateUrl: '/components/shared/footer/footer.html'
+          }
         }
       })
-      .state('about', {
+      .state('app.dashboard', {
+        url: '/dashboard',
+        templateUrl: '/components/dashboard/dashboard.html'
+      })
+      .state('app.about', {
         url: '/about',
         templateUrl: '/components/about/about.html'
       })
-      .state('login', {
+      .state('app.login', {
         url: '/login',
-        views: {
-          '': {
-            templateUrl: '/api/login',
-            controller: ['$rootScope', function($rootScope) {
-              $rootScope.pageClass = 'login-box';
-            }]
-          },
-          footer: {templateUrl: '/components/shared/footer/footer.html'}
-        }
+        templateUrl: '/api/login',
+        controller: ['$rootScope', function($rootScope) {
+          $rootScope.pageClass = 'login-box';
+          $rootScope.isNoHeader = true;
+          console.log($rootScope.isNoHeader);
+        }]
       })
-      .state('create-password', {
+      .state('app.create-password', {
         url: '/create-password/:code',
         views: {
           '': {
@@ -59,8 +68,8 @@ oz.config([
 
     // url router provider
     $urlRouterProvider
-      //.when('/dashboard','/')
-      .otherwise('dashboard');
+      //.when('/', '/dashboard')
+      .otherwise('/dashboard');
   }]);
 
 /**

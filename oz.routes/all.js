@@ -12,6 +12,7 @@ router.all('*', _auforization, _isAjaxReq, function (req, res, next) {
 function _auforization(req, res, next) {
   var exeptUrl = [
     '/index',
+    '/dashboard',
     '/login',
     '/create-password',
     '/registration',
