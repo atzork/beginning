@@ -1,4 +1,4 @@
-var oz = angular.module('oz', ['ngMessages', 'ui.router']);
+var oz = angular.module('oz', ['ngMessages', 'ngResource', 'ui.router']);
 
 oz.run(['$rootScope', function($rootScope) {
   $rootScope.$on('$stateChangeStart', function() {
@@ -8,6 +8,47 @@ oz.run(['$rootScope', function($rootScope) {
 }]);
 
 oz.controller('mainController', [function () {
+}]);
+
+oz.factory('User', ['$resource', function($resource) {
+  var userProxy = $resource('/api/user/:action');
+  function User(userData) {
+    if (userData) {
+      this.setData(userData);
+    }
+  }
+  User.prototype = {
+    setData: function(userData) {
+      angular.extend(this, userData);
+      return this;
+    },
+
+    get: function(done) {
+      return userProxy.get({action: 'get/' + this.id}, function(resp) {
+        return done(resp.error, resp.data, resp);
+      });
+    },
+
+    load: function(done) {
+      return $resource.get('/api/get-user' + this.id, function(resp) {
+        return done(resp.error, resp.data, resp);
+      }, function(resp) {
+        return done(resp.error, resp.data, resp);
+      });
+    },
+
+    edit: function(done) {
+      return $resource.put('/api/edit-user/ + this.id', function(resp) {
+        return done(resp.error, resp.data, resp);
+      });
+    },
+
+    createPassword: function(formData, done) {
+      return $resource.post('/api/create-password', formData, function(resp) {
+        return done(resp.error, resp.data, resp);
+      });
+    }
+  };
 }]);
 
 /**
