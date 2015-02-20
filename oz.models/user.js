@@ -1,101 +1,102 @@
 /**
  * Created by sergey on 2/3/15.
  */
-var crypto = require('crypto');
+var crypt = require('crypto');
 var mongoose = require('../oz.configs/mongoose');
 var Schema = mongoose.Schema;
 
-var schemaUser = new Schema({
-  'email': {
-    type    : String,
+var schemaUser;
+schemaUser = new Schema({
+  email: {
+    type: String,
     required: true,
-    index   : {unique: true},
-    trim    : true
+    index: {unique: true},
+    trim: true
   },
-  'hashedPassword': {
-    type    : String,
+  hashedPassword: {
+    type: String,
     required: true,
-    trim    : true
+    trim: true
   },
-  'salt': {
-    type    : String,
+  salt: {
+    type: String,
     required: true,
-    trim    : true
+    trim: true
   },
 
   // role information ----
 
-  'role': {
+  role: {
     // owner, staff, customer
-    type    : String,
+    type: String,
     required: true
   },
-  'invitationKey': {
-    type  : String,
-    trim  : true,
-    index : {
+  invitationKey: {
+    type: String,
+    trim: true,
+    index: {
       unique: true,
-      spare : true
+      spare: true
     }
   },
-  'userIdOuter': {
-    type  : Schema.Types.ObjectId,
-    index : {spare: true}
+  userIdOuter: {
+    type: Schema.Types.ObjectId,
+    index: {spare: true}
   },
 
   // personal information ----
 
-  'firstName': {
-    type  : String,
-    trim  : true,
-    index : true
+  firstName: {
+    type: String,
+    trim: true,
+    index: true
   },
-  'lastName': {
-    type  : String,
-    trim  : true,
-    index : true
+  lastName: {
+    type: String,
+    trim: true,
+    index: true
   },
-  'emails': { type: [String] },
-  'phones': { type: [String] },
-  'address': {
+  emails: {type: [String]},
+  phones: {type: [String]},
+  address: {
     type: String,
     trim: true
   },
-  'birth': { type: Date },
+  birth: {type: Date},
 
   // busines info -------
-  'paymentMethod': [{
+  paymentMethod: [{
     system: {
-      type    : String,
+      type: String,
       required: true,
-      trim    : true
+      trim: true
     },
-    'cardNumber': {
-      type    : String,
+    cardNumber: {
+      type: String,
       required: true,
-      trim    : true
+      trim: true
     },
-    'cvv'       : { type: Number },
-    'billingZip': { type: Number }
+    cvv: {type: Number},
+    billingZip: {type: Number}
   }],
-  'membership': [{
-    'kind'  : { type: String },
-    'start' : { type: Date },
-    'end'   : { type: Date }
+  membership: [{
+    kind: {type: String},
+    start: {type: Date},
+    end: {type: Date}
   }],
 
   // customer info -----
-  'classPack': [{
+  classPack: [{
     kind: {
       type: String,
       trim: true
     },
-    remaning: { type: Number },
+    remaning: {type: Number},
     nameActivity: {
       type: String,
       trim: true
     },
-    staffId:{ type: Schema.Types.ObjectId },
+    staffId: {type: Schema.Types.ObjectId},
     staffName: {
       type: String,
       trim: true
@@ -104,55 +105,56 @@ var schemaUser = new Schema({
 });
 
 schemaUser.virtual('fullName')
-  .get(function(){
+  .get(function () {
     return this.firstName + ' ' + this.lastName;
   });
 
 schemaUser.virtual('password')
-  .set(function(password){
-console.log('Create PASSWORD:: ',password);
+  .set(function (password) {
+    console.log('Create PASSWORD:: ', password);
     this._plainPassword = password;
-    this.salt           = '' + Math.random()*10;
+    this.salt = '' + Math.random() * 10;
     this.hashedPassword = this.encryptPassword(password);
   })
-  .get(function(){
+  .get(function () {
     return this._plainPassword;
   });
 
-schemaUser.methods.encryptPassword = function(password){
-  if(!this.salt){this.salt=''} // @todo убрать когда сделаю нормальный функционал!!!
-  console.log('encryptPassword -- password:: ',password);
-  return crypto.createHmac('sha1',this.salt).update(password).digest('hex');
+schemaUser.methods.encryptPassword = function (password) {
+  if (!this.salt) {
+    this.salt = '';
+  } // @todo убрать когда сделаю нормальный функционал!!!
+  console.log('encryptPassword -- password:: ', password);
+  return crypt.createHmac('sha1', this.salt).update(password).digest('hex');
 };
 
-schemaUser.methods.checkPassword = function(password){
+schemaUser.methods.checkPassword = function (password) {
   return this.encryptPassword(password) === this.hashedPassword;
 };
 
 var DbModel = require('./common');
-var UserInst= new DbModel('User',schemaUser);
+var UserInst = new DbModel('User', schemaUser);
 
-UserInst.createPassword = function(id, role, password, rePassword,done) {
+UserInst.createPassword = function (id, role, password, rePassword, done) {
   console.log('createPassword');
-  this.getById(id,function(err,user){
-    if(err){
+  this.getById(id, function (err, user) {
+    if (err) {
       return done(err);
     }
-    if(!user){
-      return done(false,user);
+    if (!user) {
+      return done(false, user);
     }
     console.log(user);
     user.password = password;
     user.role = role;
-    user.save(function(err){
-      if(err){
+    user.save(function (err) {
+      if (err) {
         console.error(err);
       }
-      return done(null,user);
+      return done(null, user);
     });
-
   });
 };
 
-exports.User = mongoose.model('User',schemaUser);
+exports.User = mongoose.model('User', schemaUser);
 exports.UserInst = UserInst;

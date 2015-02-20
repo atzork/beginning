@@ -1,10 +1,9 @@
 {
   "config-common-enabled": true,
-
   "session": {
     "secret": "Zork-secret",
     "maxAge": 3600,
-    "key"   : "outingz",
+    "key": "outingz",
     "saveUninitialized": true,
     "resave": true
   },

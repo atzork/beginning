@@ -3,56 +3,65 @@
  * Login controllers
  */
 
-// oz.authenticateCtrl
-oz.controller('authenticateCtrl',['$scope','$http','$location',function($scope,$http,$location){
+var oz = oz || {};
 
+// oz.authenticateCtrl
+oz.controller('authenticateCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
   $scope.authPending = false;
-  $scope.authAction = function authAction(formData, validity){
-    if(validity){
+  $scope.authAction = function authAction(formData, validity) {
+    if (validity) {
       $scope.authPending = true;
-      $http.post('/api/login',formData)
-        .success(function(){
+      $http.post('/api/login', formData)
+        .success(function() {
           $scope.authPending = false;
           $location.path('/dashboard');
         })
-        .error(function(answ,status){
+        .error(function(answ) {
           $scope.authPending = false;
-          console.log($scope.authPending);
-          if(!answ){
+          if (!answ) {
             return false;
           }
 
+          for (var att in $scope.authForm.$error) {
+            if ($scope.authForm.$error.hasOwnProperty(att)) {
+              $scope.authForm.email.$setValidity(att, true);
+            }
+          }
+
+          $scope.authForm.$setPristine(true);
+          //$scope.authForm.email.$setValidity('emailNotFound', true);
+
+          //alert();
+
           $scope.allowSubmit = false;
-          if(answ.typeError){
-
-            if(answ.typeError == 1) {
-              $scope.authForm.email.$setValidity('emailNotFound',false);
-              $scope.allowSubmit = true;
-            } else {
-              $scope.authForm.email.$setValidity('emailNotFound',true);
+          if (answ.typeError) {
+            switch (parseInt(answ.typeError, 10)) {
+              case 1:
+                $scope.authForm.email.$setValidity('emailNotFound', false);
+                $scope.allowSubmit = true;
+                break;
+              case 2:
+                $scope.authForm.password.$setValidity('wrongPassword', false);
+                $scope.allowSubmit = true;
+                break;
+              default:
+                break;
             }
-
-            if(answ.typeError == 2) {
-              $scope.authForm.password.$setValidity('wrongPassword',false);
-              $scope.allowSubmit = true;
-            } else {
-              $scope.authForm.password.$setValidity('wrongPassword',true);
-            }
-
           } // if error from server
 
-          console.log('error:: ',arguments);
+          console.log('error:: ', arguments);
         });
     }
     return false;
   };
 
-  $scope.forgotPassword = function forgotPassword(email){
+  $scope.forgotPassword = function forgotPassword(email) {
     $scope.forgotPasswordProcess = false;
+    console.log(email);
     //$http.post('/forgot-password',{email:email})
     //  .success()
     //  .error();
     console.log('forgotPasswordProcess');
     return false;
-  }
+  };
 }]);

@@ -113,7 +113,7 @@ form.login .has-error  input.form-control{
     color: #FF0000;
     text-align: right;
   }
-  input.ng-invalid{
+  input.error-validation-field{
     box-shadow:1px 1px 10px rgba(176, 0, 64, 0.6);-moz-box-shadow:1px 1px 10px rgba(176, 0, 64, 0.6);
     -o-box-shadow:1px 1px 10px rgba(176, 0, 64, 0.6);-webkit-box-shadow:1px 1px 10px rgba(176, 0, 64, 0.6);
   }
