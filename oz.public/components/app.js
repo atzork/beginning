@@ -44,24 +44,14 @@ oz.config([
       .state('app.login', {
         url: '/login',
         templateUrl: '/api/login',
-        controller: ['$rootScope', function($rootScope) {
-          $rootScope.pageClass = 'login-box';
-          $rootScope.isNoHeader = true;
-          console.log($rootScope.isNoHeader);
-        }]
+        controller: 'AuthenticateCtrl'
       })
       .state('app.create-password', {
         url: '/create-password/:code',
-        views: {
-          '': {
-            //54d490d0e237ecbaaf7f684a
-            templateUrl: function(params) {
-              return '/api/create-password/' + params.code;
-            }
-          },
-          header: {templateUrl: '/components/shared/header/header.html'},
-          footer: {templateUrl: '/components/shared/footer/footer.html'}
-        }
+        templateUrl: function(params) {
+          return '/api/create-password/' + params.code;
+        },
+        controller: 'CreatePasswordController'
       });
 
     $locationProvider.html5Mode(true);
