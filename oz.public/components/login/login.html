@@ -1,96 +1,71 @@
-  <!--<div class="page login-box">-->
-    <div class="wrapper">
-        <div class="main-centr-container">
-          <h1 class="logo center">Outingz<span class="lighter">admin</span></h1>
-          <form
-            class       = "login form-horizontal"
-            novalidate  = "novalidate"
-            role        = "form"
-            name        = "authForm"
-            method      = "post"
-            ng-submit   = "submitted=true; authAction(login,authForm.$valid || allowSubmit)"
-            ng-controller = "authenticateCtrl"
-          >
-            <div
-              class     = "form-group"
-              ng-class  = "{'has-error':authForm.email.$invalid && (submitted || authForm.email.$touched), 'add-loader':authForm.password.$pending}"
-            >
-              <input
-                id          = "auth_email"
-                class       = "form-control"
-                type        = "email"
-                name        = "email"
-                placeholder = "info@examlpe.com"
-                autocomplete= "off"
-                autofocus   = "on"
-                required    = "required"
-                ng-maxlength= "69"
-                ng-model    = "login.email"
-                ng-model-options = "{debounce:{'default':500,'blur': 1}}"
-              >
-              <div
-                class       = "error-validation"
-                ng-if       = "authForm.email.$touched || submitted"
-                ng-messages = "authForm.email.$error"
-                ng-messages-include = "/components/shared/error-messages.html"
-                ng-messages-multiple
-              ></div>
-            </div>
-            <div
-              class       = "form-group"
-              ng-class    = "{'has-error':authForm.password.$invalid && (submitted || authForm.password.$touched), 'add-loader':authForm.password.$pending}"
-            >
-              <input
-                id          = "auth_password"
-                class       = "form-control"
-                type        = "password"
-                name        = "password"
-                placeholder = "Пароль"
-                autocomplete= "off"
-                required    = "required"
-                ng-model    = "login.password"
-                ng-maxlength= "69"
-                ng-model-options = "{debounce:{'default':500,'blur': 1}}"
-              >
-              <div
-                class         = "error-validation"
-                ng-if         = "authForm.password.$touched || submitted"
-                ng-messages   = "authForm.password.$error"
-                ng-messages-include = "/components/shared/error-messages.html"
-                ng-messages-multiple
-              ></div>
-            </div>
-            <div class="form-group">
-              <button class="btn btn-primary" type = "submit" ng-class = "{'add-loader out':authPending}">Login Now</button>
-            </div>
-            <div class="form-group forgot-password-box" ng-class="{'add-loader out':forgotPasswordProcess}">
-              Forgot your password?
-              <a ng-click="authForm.email.$valid && forgotPassword(login.email)" ng-disabled="checked">Reset it here.</a>
-            </div>
-          </form>
-        </div> <!-- .main-centr-container -->
-      </div> <!-- .wrapper -->
-
-      <footer>
-        <div class="copyright">
-          Copyright <span class="lighter">&copy;</span>2014 Outingz. All rights reserved.
-        </div>
-      </footer>
-    <!--</div> &lt;!&ndash; .page &ndash;&gt;-->
-
-  <!--<script type='text/javascript' src='/libs/angular/angular.min.js'></script>-->
-  <!--<script type='text/javascript' src='/libs/angular-messages/angular-messages.min.js'></script>-->
-  <!--<script type="text/javascript" src="/libs/angular-ui-router/release/angular-ui-router.min.js"></script>-->
-  <!--<script type='text/javascript' src='/libs/angular-ui-bootstrap-bower/ui-bootstrap.min.js'></script>-->
-
-  <!--<script type="text/javascript" src="/components/shared/appModule.js"></script>-->
-  <!--<script type="text/javascript" src="/components/shared/appDirectives.js"></script>-->
-  <!--<script type="text/javascript" src="/components/shared/appRoutes.js"></script>-->
-
-  <!--<script type="text/javascript" src="/components/login/loginController.js"></script>-->
-  <!--<script type="text/javascript" src="/components/login/loginDirective.js"></script>-->
-
-  <!--&lt;!&ndash;<script type='text/javascript' src='/js/main.js'></script>&ndash;&gt;-->
-
-  <!--</body>-->
-<!--</html>-->
+<div class="wrapper">
+  <div class="main-centr-container">
+    <h1 class="logo center">Outingz<span class="lighter">admin</span></h1>
+    <form
+      class       = "login form-horizontal"
+      novalidate  = "novalidate"
+      role        = "form"
+      name        = "authForm"
+      method      = "post"
+      ng-submit   = "submitted=true; authAction(login,authForm.$valid || allowSubmit)"
+      ng-controller = "authenticateCtrl"
+    >
+      <div
+        class     = "form-group"
+        ng-class  = "{'has-error':authForm.email.$invalid && (submitted || authForm.email.$touched), 'add-loader':authForm.password.$pending}"
+      >
+        <input
+          id          = "auth_email"
+          class       = "form-control"
+          type        = "email"
+          name        = "email"
+          placeholder = "info@examlpe.com"
+          autocomplete= "off"
+          autofocus   = "on"
+          required    = "required"
+          ng-maxlength= "69"
+          ng-model    = "login.email"
+          ng-model-options = "{debounce:{'default':500,'blur': 1}}"
+        >
+        <div
+          class       = "error-validation"
+          ng-if       = "authForm.email.$touched || submitted"
+          ng-messages = "authForm.email.$error"
+          ng-messages-include = "/components/shared/error-messages.html"
+          ng-messages-multiple
+        ></div>
+      </div>
+      <div
+        class       = "form-group"
+        ng-class    = "{'has-error':authForm.password.$invalid && (submitted || authForm.password.$touched), 'add-loader':authForm.password.$pending}"
+      >
+        <input
+          id          = "auth_password"
+          class       = "form-control"
+          type        = "password"
+          name        = "password"
+          placeholder = "Пароль"
+          autocomplete= "off"
+          required    = "required"
+          ng-model    = "login.password"
+          ng-maxlength= "69"
+          ng-model-options = "{debounce:{'default':500,'blur': 1}}"
+        >
+        <div
+          class         = "error-validation"
+          ng-if         = "authForm.password.$touched || submitted"
+          ng-messages   = "authForm.password.$error"
+          ng-messages-include = "/components/shared/error-messages.html"
+          ng-messages-multiple
+        ></div>
+      </div>
+      <div class="form-group">
+        <button class="btn btn-primary" type = "submit" ng-class = "{'add-loader out':authPending}">Login Now</button>
+      </div>
+      <div class="form-group forgot-password-box" ng-class="{'add-loader out':forgotPasswordProcess}">
+        Forgot your password?
+        <a ng-click="authForm.email.$valid && forgotPassword(login.email)" ng-disabled="checked">Reset it here.</a>
+      </div>
+    </form>
+  </div> <!-- .main-centr-container -->
+</div> <!-- .wrapper -->
