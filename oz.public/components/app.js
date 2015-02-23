@@ -1,9 +1,14 @@
 var oz = angular.module('oz', ['ngMessages', 'ngResource', 'ui.router']);
 
-oz.run(['$rootScope', function($rootScope) {
+oz.run(['$rootScope', 'User', function($rootScope, User) {
   $rootScope.$on('$stateChangeStart', function() {
     $rootScope.pageClass = '';
     $rootScope.isNoHeader = false;
+    $rootScope.user = new User();
+    $rootScope.user.get(function() {
+      console.log('Получили ответ на запрос:: ', arguments);
+      //console.log('итого USER:: ', console.log($rootScope.user));
+    });
   });
 }]);
 
@@ -11,20 +16,36 @@ oz.controller('mainController', [function () {
 }]);
 
 oz.factory('User', ['$resource', function($resource) {
-  var userProxy = $resource('/api/user/:action');
+  var userProxy = $resource('/api/user/', null, {
+    get: {method: 'GET', url: '/api/user/get/:id'}
+  });
+  console.log(this);
   function User(userData) {
     if (userData) {
       this.setData(userData);
     }
   }
   User.prototype = {
-    setData: function(userData) {
+    setData: function(userData, done) {
+      done = done || angular.noop;
+      console.log('Установка пользователя:: ', userData);
       angular.extend(this, userData);
-      return this;
+      console.log('После обновления:: ', this);
+      return done ? done() : this;
     },
 
     get: function(done) {
-      return userProxy.get({action: 'get/' + this.id}, function(resp) {
+      console.log('GET USER');
+      var self = this;
+      var userIdParams = this._id ? {id: this._id} : null;
+      return userProxy.get(userIdParams, function(resp) {
+        console.log('получили ответ с пользователем');
+        if (resp.error) {
+          console.error('Error get user');
+        } else {
+          self.setData(resp.data);
+        }
+        console.log('отдаем пользователя');
         return done(resp.error, resp.data, resp);
       });
     },
@@ -49,6 +70,7 @@ oz.factory('User', ['$resource', function($resource) {
       });
     }
   };
+  return User;
 }]);
 
 /**
@@ -80,7 +102,10 @@ oz.config([
       })
       .state('app.about', {
         url: '/about',
-        templateUrl: '/components/about/about.html'
+        templateUrl: '/components/about/about.html',
+        controller: ['$rootScope', function($rootScope) {
+          console.log('ABOUT USER:: ', $rootScope.user);
+        }]
       })
       .state('app.login', {
         url: '/login',

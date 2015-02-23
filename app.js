@@ -13,6 +13,7 @@ var logger = require('morgan');
 
 var allRoutes = require('./oz.routes/all');
 var apiRoutes = require('./oz.routes/api');
+var apiUser = require('./oz.routes/api-user');
 var routes = require('./oz.routes/index');
 
 var config = require('./oz.configs/env');
@@ -47,6 +48,7 @@ app.use(express.static(path.join(__dirname, 'oz.public')));
 app.use(express.static(path.join(__dirname, 'node_modules')));
 
 app.use('*', allRoutes);
+app.use('/api/user', apiUser);
 app.use('/api', apiRoutes);
 app.use('/', routes);
 

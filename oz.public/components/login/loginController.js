@@ -6,7 +6,7 @@
 var oz = oz || {};
 
 // oz.authenticateCtrl
-oz.controller('AuthenticateCtrl', ['$rootScope','$scope', '$http', '$location', function($rootScope,$scope, $http, $location) {
+oz.controller('AuthenticateCtrl', ['$rootScope', '$scope', '$http', '$location', function($rootScope, $scope, $http, $location) {
   $rootScope.pageClass = 'login-box';
   $rootScope.isNoHeader = true;
   $scope.authPending = false;
