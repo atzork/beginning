@@ -3,7 +3,7 @@
  */
 var express = require('express');
 var router = new express.Router();
-var config = require('../oz.configs/env');
+//var config = require('../oz.configs/env');
 
 router.all('*', function(req, res, next) {
   res.set({'Content-Type': 'application/json; charset=utf-8'});

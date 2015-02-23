@@ -6,7 +6,7 @@
 var oz = oz || {};
 
 // oz.CreatePasswordController
-oz.controller('CreatePasswordController', ['$scope', 'User', '$http', function($scope, User, $http) {
+oz.controller('CreatePasswordController', ['$scope', 'User', function($scope, User) {
   $scope.authPending = false;
   $scope.createPasswordAction = function createPasswordAction(formData, validity) {
     if (validity) {
