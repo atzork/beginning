@@ -26,6 +26,98 @@ oz.run([
 oz.controller('mainController', [function () {
 }]);
 
+/**
+ * Interceptors
+ */
+
+oz.service('AuthInterceptor', ['$injector', function($injector) {
+  var authStatus = [401, 403];
+  var AuthInterceptor = {
+    request: function(config) {
+      var Auth = $injector.get('Auth');
+      var token = Auth.getToken();
+      if (token) {
+        config.headers.Authorization = 'JWT' + token;
+      }
+      return config;
+    },
+
+    responseError: function(response) {
+      var $state = $injector.get('$state');
+      if (authStatus.indexOf(response.status) !== -1) {
+        $state.go('app.login');
+      }
+      return response;
+    }
+  };
+  return AuthInterceptor;
+}]);
+
+/**
+ * Services
+ */
+
+oz.service('Auth', ['$resource', '$state', '$window', 'userManager', function($resource, $state, $window, userManager) {
+  var authProxy = $resource('/api/user', null, {
+    logIn: {method: 'POST', url: '/api/user/login'},
+    logOut: {method: 'POST', url: '/api/user/logout'}
+  });
+  var Auth = {
+    // Token
+    getToken: function() {
+      return $window.localStorage.gatItem('token');
+    },
+    setToken: function(token) {
+      $window.localStorage.setItem('token', token);
+      return this;
+    },
+    deleteToken: function() {
+      $window.localStorage.removeItem('token');
+      return this;
+    },
+
+    logIn: function(userData, done) {
+      var self = this;
+      return authProxy.logIn(function(resp) {
+        if (resp.error || !resp.data || !resp.data.user) {
+          console.error('User Login Error!!');
+          done(resp.error);
+        } else {
+          if (resp.data.token) {
+            Auth.setToken(resp.data.token);
+          }
+          userManager.setUserLocal(resp.data.user);
+          done(resp.error, resp.data, resp);
+        }
+        return self;
+      });
+    },
+
+    logOut: function(done) {
+      var self = this;
+      return authProxy.logOut(function(resp) {
+        if (resp.error || !resp.data || !resp.data.user) {
+          console.error('LogOut Error!!');
+          done(resp.error);
+        } else {
+          Auth.deleteToken();
+          $state.go('app.login');
+          userManager.deleteUserLocal(resp.data.user);
+          done(resp.error, resp.data, resp);
+        }
+        return self;
+      });
+    }
+
+  };
+
+  return Auth;
+}]);
+
+/**
+ * Factory
+ */
+
 oz.factory('User', [function() {
   function User(userData) {
     if (userData) {
@@ -48,64 +140,89 @@ oz.factory('userManager', ['$resource', 'User', function($resource, User) {
     get: {method: 'GET', url: '/api/user/get/:id'},
     createPassword: {method: 'POST', url: '/api/user/edit-password'}
   });
-  var userManager = {
-    _pool: {},
-    _retrieveInstance: function(userId, userData) {
-      var instance = this._pool[userId];
-      if (instance) {
-        instance.setData(userData);
+  var pool = {};
+  function search(userId) {
+    if (!userId) {
+      console.error('User ID is not defined!! - User not resolved');
+      return false;
+    }
+    return pool[userId];
+  }
+  function retrieveInstance(userData, userId) {
+    userId = userData._id ? userData._id : (userId || null);
+    if (!userId) {
+      console.error('User ID is not defined!! - User not resolved');
+      return false;
+    }
+    var instance = pool[userId];
+    if (instance) {
+      instance.setData(userData);
+    } else {
+      instance = new User(userData);
+      pool[userId] = instance;
+    }
+    return instance;
+  }
+  function load(userId, done) {
+    console.log('GET USER');
+    var userIdParams = userId ? {id: userId} : null;
+    return userProxy.get(userIdParams, function(resp) {
+      if (resp.error || !resp.data) {
+        console.error('Error get user');
       } else {
-        instance = new User(userData);
-        this._pool[userId] = instance;
+        retrieveInstance(resp.data);
       }
-      return instance;
-    }, //_retrieveInstance()
-    _search: function(userId) {
-      return this._pool[userId];
-    },
-    _load: function(userId, done) {
-      console.log('GET USER');
-      var self = this;
-      var userIdParams = userId ? {id: userId} : null;
-      return userProxy.get(userIdParams, function(resp) {
-        if (resp.error || !resp.data) {
-          console.error('Error get user');
-        } else {
-          self._retrieveInstance(resp.data._id, resp.data);
-        }
-        done(resp.error, resp.data, resp);
-        return self;
-      });
-    }, // _load()
-    _editPassword: function(userData, done) {
-      var self = this;
-      console.log('Создание пароля для ', userData._id);
-      return userProxy.createPassword(null, userData, function(resp) {
-        console.log('ответ сервера на изменение пароля', resp);
-        done(resp.error);
-        return self;
-      });
-    },
+      done(resp.error, resp.data, resp);
+      return;
+    });
+  }
+  function editPassword(userData, done) {
+    console.log('Создание пароля для ', userData._id);
+    return userProxy.createPassword(null, userData, function(resp) {
+      console.log('ответ сервера на изменение пароля', resp);
+      done(resp.error);
+      return;
+    });
+  }
 
+  // main method
+  var userManager = {
     // получение пользователя от сервака
     getUser: function(userId, done) {
-      var user = this._search(userId);
+      var user = search(userId);
       if (user) {
         done(null, user, null);
       } else {
-        this._load(userId, done);
+        load(userId, done);
       }
       return this;
     },
 
+    // set local userData (logIn)
+    setUserLocal: function(userData, userId) {
+      retrieveInstance(userData, userId);
+      return this;
+    },
+
+    // delete local userData (logOut)
+    deleteUserLocal: function(userData, userId) {
+      userId = userData._id ? userData._id : (userId || null);
+      var user = search(userId);
+      if (user) {
+        delete pool[userId];
+        return true;
+      }
+      console.log('User data is not found!!');
+      return false;
+    },
+
     // редактирование пользователя
     setUser: function(userData, done) {
-      var self = this;
-      var user = this._search(userData._id);
+      var user = search(userData._id);
       if (user) {
         user.setData(userData);
       } else {
-        user = self._retrieveInstance(userData);
+        user = retrieveInstance(userData);
       }
       this._save(user, done);
       return this;
@@ -114,7 +231,7 @@ oz.factory('userManager', ['$resource', 'User', function($resource, User) {
     // создание пароля
     editPassword: function(userData, done) {
       var self = this;
-      this._editPassword(userData, function(error) {
+      editPassword(userData, function(error) {
         if (error) {
           done(error);
         } else {
@@ -207,7 +324,6 @@ oz.config([
   */
 
 // Validations
-// -----------
 
 // oz.compareTo
 oz.directive('compareTo', function() {
@@ -234,10 +350,6 @@ oz.directive('compareTo', function() {
 });
 
 // Validations END
-// ============
 
 // templates
-// ---------
-
 // templates END
-// =============

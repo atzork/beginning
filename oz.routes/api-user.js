@@ -10,6 +10,7 @@ router.all('*', function(req, res, next) {
   next();
 });
 
+// get user info
 router.get('/get', function(req, res) {
   console.log('GET INIT USER');
   if (req.user) {
@@ -31,6 +32,7 @@ router.get('/get', function(req, res) {
   return;
 });
 
+// edit user password
 router.post('/edit-password', function (req, res) {
   console.log('POST - /create-password');
   console.log('req.body:: ', req.body);
