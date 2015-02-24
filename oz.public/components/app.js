@@ -1,13 +1,17 @@
 var oz = angular.module('oz', ['ngMessages', 'ngResource', 'ui.router']);
 
-oz.run(['$rootScope', 'User', function($rootScope, User) {
+oz.run(['$rootScope', 'userManager', function($rootScope, userManager) {
   $rootScope.$on('$stateChangeStart', function() {
+    var userID = $rootScope.user ? $rootScope.user._id : null;
     $rootScope.pageClass = '';
     $rootScope.isNoHeader = false;
-    $rootScope.user = new User();
-    $rootScope.user.get(function() {
-      console.log('Получили ответ на запрос:: ', arguments);
-      //console.log('итого USER:: ', console.log($rootScope.user));
+
+    userManager.getUser(userID, function(error, user) {
+      if (error || !user) {
+        $rootScope.redirect('/login');
+      } else {
+        $rootScope.user = user;
+      }
     });
   });
 }]);
@@ -15,11 +19,7 @@ oz.run(['$rootScope', 'User', function($rootScope, User) {
 oz.controller('mainController', [function () {
 }]);
 
-oz.factory('User', ['$resource', function($resource) {
-  var userProxy = $resource('/api/user/', null, {
-    get: {method: 'GET', url: '/api/user/get/:id'}
-  });
-  console.log(this);
+oz.factory('User', [function() {
   function User(userData) {
     if (userData) {
       this.setData(userData);
@@ -28,49 +28,97 @@ oz.factory('User', ['$resource', function($resource) {
   User.prototype = {
     setData: function(userData, done) {
       done = done || angular.noop;
-      console.log('Установка пользователя:: ', userData);
       angular.extend(this, userData);
-      console.log('После обновления:: ', this);
-      return done ? done() : this;
-    },
-
-    get: function(done) {
-      console.log('GET USER');
-      var self = this;
-      var userIdParams = this._id ? {id: this._id} : null;
-      return userProxy.get(userIdParams, function(resp) {
-        console.log('получили ответ с пользователем');
-        if (resp.error) {
-          console.error('Error get user');
-        } else {
-          self.setData(resp.data);
-        }
-        console.log('отдаем пользователя');
-        return done(resp.error, resp.data, resp);
-      });
-    },
-
-    load: function(done) {
-      return $resource.get('/api/get-user' + this.id, function(resp) {
-        return done(resp.error, resp.data, resp);
-      }, function(resp) {
-        return done(resp.error, resp.data, resp);
-      });
-    },
-
-    edit: function(done) {
-      return $resource.put('/api/edit-user/ + this.id', function(resp) {
-        return done(resp.error, resp.data, resp);
-      });
-    },
-
-    createPassword: function(formData, done) {
-      return $resource.post('/api/create-password', formData, function(resp) {
-        return done(resp.error, resp.data, resp);
-      });
+      done();
+      return this;
     }
   };
   return User;
+}]);
+
+oz.factory('userManager', ['$resource', 'User', function($resource, User) {
+  var userProxy = $resource('/api/user/', null, {
+    get: {method: 'GET', url: '/api/user/get/:id'},
+    createPassword: {method: 'POST', url: '/api/user/edit-password'}
+  });
+  var userManager = {
+    _pool: {},
+    _retrieveInstance: function(userId, userData) {
+      var instance = this._pool[userId];
+      if (instance) {
+        instance.setData(userData);
+      } else {
+        instance = new User(userData);
+        this._pool[userId] = instance;
+      }
+      return instance;
+    }, //_retrieveInstance()
+    _search: function(userId) {
+      return this._pool[userId];
+    },
+    _load: function(userId, done) {
+      console.log('GET USER');
+      var self = this;
+      var userIdParams = userId ? {id: userId} : null;
+      return userProxy.get(userIdParams, function(resp) {
+        if (resp.error || !resp.data) {
+          console.error('Error get user');
+        } else {
+          self._retrieveInstance(resp.data._id, resp.data);
+        }
+        done(resp.error, resp.data, resp);
+        return self;
+      });
+    }, // _load()
+    _editPassword: function(userData, done) {
+      var self = this;
+      console.log('Создание пароля для ', userData._id);
+      return userProxy.createPassword(null, userData, function(resp) {
+        console.log('ответ сервера на изменение пароля', resp);
+        done(resp.error);
+        return self;
+      });
+    },
+
+    // получение пользователя от сервака
+    getUser: function(userId, done) {
+      var user = this._search(userId);
+      if (user) {
+        done(null, user, null);
+      } else {
+        this._load(userId, done);
+      }
+      return this;
+    },
+
+    // редактирование пользователя
+    setUser: function(userData, done) {
+      var self = this;
+      var user = this._search(userData._id);
+      if (user) {
+        user.setData(userData);
+      } else {
+        user = self._retrieveInstance(userData);
+      }
+      this._save(user, done);
+      return this;
+    },
+
+    // создание пароля
+    editPassword: function(userData, done) {
+      var self = this;
+      this._editPassword(userData, function(error) {
+        if (error) {
+          done(error);
+        } else {
+          done(null);
+        }
+        return self;
+      });
+    }
+  };
+
+  return userManager;
 }]);
 
 /**

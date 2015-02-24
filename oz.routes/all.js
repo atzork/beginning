@@ -14,12 +14,11 @@ function _auforization(req, res, next) {
     '/index',
     '/dashboard',
     '/login',
-    '/create-password',
     '/registration',
     '/favicon.ico',
     '/api/login',
     '/api/registration',
-    '/api/create-password'
+    '/api/user/edit-password'
   ];
   var maxExpUrl = exeptUrl.length;
   var regexp = /^.$/;
@@ -31,20 +30,24 @@ function _auforization(req, res, next) {
   //console.log('Урл на входе:: ', req.originalUrl);
   if (exeptUrl.indexOf(req.originalUrl) < 0) {
     for (var i = 0; i < maxExpUrl; i += 1) {
-      regexp = new RegExp('^' + exeptUrl[i] + '.*', 'i');
+      regexp = new RegExp('^' + exeptUrl[i] + '/?.*', 'i');
       //console.log('Проверем:: ',exeptUrl[i]);
       //console.log('regexp:: ',regexp);
       if (regexp.test(req.originalUrl)) {
+        //console.log('тест пройден!!');
         resolve = true;
         break;
       }
     }
   } else {
+    //console.log('Совпал урл (%s) :: ',req.originalUrl ,exeptUrl.indexOf(req.originalUrl));
     resolve = true;
   }
 
   //console.log('Разрешено ли? ',resolve);
   //console.log('начинаем проверку:: ',req.originalUrl);
+  //console.log('!req.user:: ', !req.user);
+  //console.log('!resolve:: ', !resolve);
   if (!req.user && !resolve) {
     console.error('Не авторизированный пользователь');
     return res.redirect('/login');

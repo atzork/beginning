@@ -87,35 +87,6 @@ router.get('/create-password/:id([0-9a-zA-Z]{1,32})', function (req, res, next) 
 });
 
 // server action
-router.post('/create-password', function (req, res) {
-  console.log('POST - /create-password', req.body);
-  res.set({'Content-Type': 'application/json; charset=utf-8'});
-  var UserInst = require('../oz.models/user').UserInst;
-  UserInst.createPassword(req.body.id, 'staff', req.body.password, req.body.repassword, function (err, user) {
-    if (err) {
-      res
-        .set(500)
-        .send({
-          typeError: 500,
-          message: 'Server error'
-        });
-      return;
-    }
-    if (!user) {
-      res
-        .set(401)
-        .send({
-          typeError: config.get('errorStatus:userNotFound:typeError'),
-          message: config.get('errorStatus:userNotFound:message')
-        });
-      return;
-    }
-    res
-      .set(200)
-      .send({status: 'ok'});
-    return;
-  });
-});
 
 // Create password END
 // ===================
