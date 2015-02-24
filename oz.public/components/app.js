@@ -1,20 +1,27 @@
 var oz = angular.module('oz', ['ngMessages', 'ngResource', 'ui.router']);
 
-oz.run(['$rootScope', 'userManager', function($rootScope, userManager) {
-  $rootScope.$on('$stateChangeStart', function() {
-    var userID = $rootScope.user ? $rootScope.user._id : null;
-    $rootScope.pageClass = '';
-    $rootScope.isNoHeader = false;
+oz.run([
+  '$rootScope', '$injector', 'userManager',
+  function($rootScope, $injector, userManager) {
+    $rootScope.$on('$stateChangeStart', function() {
+      var userID = $rootScope.user ? $rootScope.user._id : null;
+      var state;
+      $rootScope.pageClass = '';
+      $rootScope.isNoHeader = false;
 
-    userManager.getUser(userID, function(error, user) {
-      if (error || !user) {
-        $rootScope.redirect('/login');
-      } else {
-        $rootScope.user = user;
+      if (!userID) {
+        state = $injector.get('$state');
+        userManager.getUser(null, function (error, user) {
+          if (error || !user) {
+            state.go('app.login');
+          } else {
+            $rootScope.user = user;
+          }
+        });
       }
     });
-  });
-}]);
+  }
+]);
 
 oz.controller('mainController', [function () {
 }]);
@@ -173,7 +180,26 @@ oz.config([
     // url router provider
     $urlRouterProvider
       //.when('/', '/dashboard')
-      .otherwise('/dashboard');
+      //.otherwise('/dashboard');
+      .otherwise(function($injector) {
+        var rootScope = $injector.get('$rootScope');
+        var userManager = $injector.get('userManager');
+        var userID = rootScope.user ? rootScope.user._id : null;
+        var state;
+        if (!userID) {
+          state = $injector.get('$state');
+          userManager.getUser(null, function (error, user) {
+            if (error || !user) {
+              state.go('app.login');
+            } else {
+              rootScope.user = user;
+              state.go('app.dashboard');
+            }
+          });
+        } else {
+          state.go('app.dashboard');
+        }
+      });
   }]);
 
 /**
