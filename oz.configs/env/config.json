@@ -9,6 +9,7 @@
   },
   "favIcon": "/oz.public/assets/image/favicon.ico",
   "errorStatus": {
+    "http-401": "Unauthorized",
     "http-404": "Page not found :(",
     "error-500": "Server error",
     "emailNotFound": {

@@ -13,6 +13,8 @@ oz.service('AuthInterceptor', ['$injector', function($injector) {
       if (token) {
         config.headers.Authorization = 'JWT' + token;
       }
+
+      config.headers['X-Requested-With'] = 'XMLHttpRequest';
       return config;
     },
 
