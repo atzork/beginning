@@ -14,10 +14,13 @@ function _auforization(req, res, next) {
     '/index',
     '/dashboard',
     '/login',
-    '/registration',
-    '/favicon.ico',
     '/api/login',
+    '/registration',
     '/api/registration',
+    '/favicon.ico',
+    '/api/user/registration',
+    '/api/user/login',
+    '/api/user/get',
     '/api/user/edit-password'
   ];
   var maxExpUrl = exeptUrl.length;

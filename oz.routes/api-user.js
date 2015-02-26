@@ -3,6 +3,7 @@
  */
 var express = require('express');
 var router = new express.Router();
+var passport = require('passport');
 var config = require('../oz.configs/env');
 
 router.all('*', function(req, res, next) {
@@ -17,7 +18,7 @@ router.get('/get', function(req, res) {
     res
       .send({
         success: true,
-        data: req.user,
+        data: {user: req.user},
         error: null
     });
   } else {
@@ -30,6 +31,68 @@ router.get('/get', function(req, res) {
       });
   }
   return;
+});
+
+// LOGIN
+router.post('/login', function (req, res, next) {
+  console.log('POST - login');
+  setTimeout(function () { // <-- для визуализации иконки процесса загрузки
+    passport.authenticate('local', function (err, user, info) {
+      console.log('passport.authenticate', arguments);
+      res.set({'Content-Type': 'application/json; charset=utf-8'});
+      if (err) {
+        console.error('Ошибка аутентификации!!!!');
+        res
+          .status(500)
+          .send({
+            success: false,
+            data: null,
+            error: {
+              typeError: 500,
+              message: config.get('errorStatus:error-500')
+            }
+          });
+        return;
+      }
+      if (!user) {
+        console.log(info.message);
+        req.session.messages = [info];
+        res
+          .status(401)
+          .send({
+            success: false,
+            data: null,
+            error: {
+              typeError: info.type,
+              message: info.message
+            }
+          });
+        return;
+      }
+      console.log('Производим Логин..');
+      req.logIn(user, function (err) {
+        if (err) {
+          console.log('Ошибка фукнции logIn()');
+          res
+            .status(500)
+            .send({
+              success: false,
+              data: null,
+              error: {
+                typeError: 500,
+                message: config.get('errorStatus:error-500')
+              }
+            });
+          return;
+        }
+        console.log('Получилось залогинится!! пользователь ', user);
+        res
+          .status(200)
+          .send({success: true, data: {user: user}, error: null});
+        return;
+      });
+    })(req, res, next);
+  }, 4000);
 });
 
 // edit user password

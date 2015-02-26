@@ -12,15 +12,12 @@
 
   <div class="page {{pageClass}}">
     <div class="wrapper">
-      <header ng-hide="isNoHeader" ui-view="header"></header>
+      <header ng-if="!isNoHeader" ui-view="header"></header>
       <div ui-view>zzz</div>
     </div> <!-- .wrapper -->
-    <footer ui-view="footer"></footer>
+    <footer ng-if="!isNoFooter" ui-view="footer"></footer>
   </div> <!-- .page -->
 
-
-
-  <!--<script type="text/javascript" src="/underscore/underscore-min.js"></script>-->
   <script type='text/javascript' src='/libs/angular/angular.min.js'></script>
   <script type="text/javascript" src="/libs/angular-resource/angular-resource.min.js"></script>
   <script type="text/javascript" src="/libs/angular-ui-router/release/angular-ui-router.min.js"></script>
@@ -29,6 +26,14 @@
   <script type='text/javascript' src='/libs/angular-ui-bootstrap-bower/ui-bootstrap.min.js'></script>
 
   <script type="text/javascript" src="/components/app.js"></script>
+  <script type="text/javascript" src="/components/constants.js"></script>
+  <script type="text/javascript" src="/components/controllers.js"></script>
+  <script type="text/javascript" src="/components/directives.js"></script>
+  <script type="text/javascript" src="/components/factory.js"></script>
+  <script type="text/javascript" src="/components/services.js"></script>
+  <script type="text/javascript" src="/components/interceptors.js"></script>
+  <script type="text/javascript" src="/components/routers.js"></script>
+  <script type="text/javascript" src="/components/services.js"></script>
 
   <script type="text/javascript" src="/components/login/loginController.js"></script>
   <script type="text/javascript" src="/components/login/loginDirective.js"></script>

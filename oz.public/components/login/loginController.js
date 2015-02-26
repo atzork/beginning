@@ -4,37 +4,31 @@
  */
 
 var oz = oz || {};
+console.log('loginController:: ', oz);
 
 // oz.authenticateCtrl
-oz.controller('AuthenticateCtrl', ['$rootScope', '$scope', '$http', '$location',
-  function($rootScope, $scope, $http, $location) {
+oz.controller('AuthenticateCtrl', ['$rootScope', '$scope', '$state', '$injector', 'Auth',
+  function($rootScope, $scope, $state, $injector, Auth) {
+    console.log('AuthenticateCtrl');
     $rootScope.pageClass = 'login-box';
     $rootScope.isNoHeader = true;
-    $scope.authPending = false;
+
     $scope.authAction = function authAction(formData, validity) {
       if (validity) {
         $scope.authPending = true;
-        $http.post('/api/login', formData)
-          .success(function() {
-            $scope.authPending = false;
-            $location.path('/dashboard');
-          })
-          .error(function(answ) {
-            $scope.authPending = false;
-            if (!answ) {
-              return false;
-            }
+        Auth.logIn(formData, function(error) {
+          $scope.authPending = false;
+          if (error) {
             for (var att in $scope.authForm.$error) {
               if ($scope.authForm.$error.hasOwnProperty(att)) {
                 $scope.authForm.email.$setValidity(att, true);
+                $scope.authForm.password.$setValidity(att, true);
               }
             }
-            $scope.authForm.$setPristine(true);
-            //$scope.authForm.email.$setValidity('emailNotFound', true);
-            //alert();
+
             $scope.allowSubmit = false;
-            if (answ.typeError) {
-              switch (parseInt(answ.typeError, 10)) {
+            if (error.typeError) {
+              switch (parseInt(error.typeError, 10)) {
                 case 1:
                   $scope.authForm.email.$setValidity('emailNotFound', false);
                   $scope.allowSubmit = true;
@@ -46,10 +40,11 @@ oz.controller('AuthenticateCtrl', ['$rootScope', '$scope', '$http', '$location',
                 default:
                   break;
               }
-            } // if error from server
-
-            console.log('error:: ', arguments);
-          });
+            }
+          } else {
+            $state.go('app.dashboard');
+          }
+        });
       }
       return false;
     };
