@@ -1,20 +1,23 @@
-/**
- * Created by sergey on 2/13/15.
- */
-module.exports = (function() {
-  var express = require('express');
-  var router = new express.Router();
-  var auth = require('../oz.configs/auth');
+var express = require('express');
+var router = new express.Router();
+var Auth = require('../oz.configs/auth').Auth;
 
-  router.use(auth(['/api/login', '/api/create-password']));
+module.exports.apiRouter = function apiRouter(app) {
+  var AuthInst = new Auth(app);
+  AuthInst.setExclude(['/api/login', '/api/create-password']);
+  router.use(AuthInst.action());
 
   router.get('/login', function (req, res) {
     res.render('components/login/login.html');
   });
 
   router.get('/:type(create|edit)-password/:id([0-9a-zA-Z]{24})', function (req, res, next) {
-    var UserInst = require('../oz.models/user').UserInst;
-    UserInst.getById(req.params.id, function (err, user) {
+    console.log(req.originalUrl);
+    //var userModel = require('../oz.models/user').userModel(app);
+    var userModel = app.get('userModel');
+    console.log('userModel:; ', userModel);
+    var userInst = userModel.userInst;
+    userInst.getById(req.params.id, function (err, user) {
       if (err || !user) {
         return next();
       }
@@ -28,4 +31,4 @@ module.exports = (function() {
   });
 
   return router;
-})();
+};

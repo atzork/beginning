@@ -3,6 +3,16 @@
  */
 'use strict';
 var express = require('express');
+var app = express();
+
+require('./oz.configs/env').configInit(app);
+require('./oz.configs/mongoose').mongooseConnect(app);
+require('./oz.configs/redisConnect').redisConnect(app);
+
+require('./oz.models/user').userModel(app);
+
+require('./oz.configs/passport').passportInit(app);
+
 var path = require('path');
 var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
@@ -11,21 +21,16 @@ var methodOverride = require('method-override');
 
 var logger = require('morgan');
 
-var apiRoutes = require('./oz.routes/api');
-var apiUser = require('./oz.routes/api-user');
-var routes = require('./oz.routes/index');
+var apiRoutes = require('./oz.routes/api').apiRouter(app);
+var apiUser = require('./oz.routes/api-user').apiUserRouter(app);
+var routes = require('./oz.routes/index').indexRouter(app);
 
-var config = require('./oz.configs/env');
+var sessionStore = require('./oz.configs/sessionStore')(app);
 
-var sessionStore = require('./oz.configs/sessionStore');
+var passport = app.get('passport');
+var config = app.get('config');
 
-require('./oz.configs/passport');
-var passport = require('passport');
-
-var app = express();
-
-var server;
-server = app.listen(config.get('server:port'), function () {
+var server = app.listen(config.get('server:port'), function () {
   console.log('Start ' + server.address().port);
 });
 

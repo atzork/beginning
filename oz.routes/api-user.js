@@ -1,15 +1,14 @@
-/**
- * Created by sergey on 2/23/15.
- */
+var express = require('express');
+var router = new express.Router();
+var passport = require('passport');
+var Auth = require('../oz.configs/auth').Auth;
 
-module.exports = (function() {
-  var express = require('express');
-  var router = new express.Router();
-  var passport = require('passport');
-  var config = require('../oz.configs/env');
-  var auth = require('../oz.configs/auth');
+module.exports.apiUserRouter = function apiUserRouter(app) {
+  var config = app.get('config');
+  var AuthInst = new Auth(app);
+  AuthInst.setExclude(['/api/user/login', '/api/user/create-password']);
 
-  router.use(auth(['/api/user/login', '/api/user/create-password']));
+  router.use(AuthInst.action());
 
   router.all('*', function (req, res, next) {
     res.set({'Content-Type': 'application/json; charset=utf-8'});
@@ -103,8 +102,11 @@ module.exports = (function() {
     console.log('POST - /create-password');
     console.log('req.body:: ', req.body);
     res.set({'Content-Type': 'application/json; charset=utf-8'});
-    var UserInst = require('../oz.models/user').UserInst;
-    UserInst.createPassword(req.body.id, 'staff', req.body.password, req.body.repassword, function (err, user) {
+    //var userModel = require('../oz.models/user').userModel(app);
+    //var UserInst = userModel.UserInst;
+    var userModel = app.get('userModel');
+    var userInst = userModel.userInst;
+    userInst.createPassword(req.body.id, 'staff', req.body.password, req.body.repassword, function (err, user) {
       if (err) {
         res
           .set(500)
@@ -138,4 +140,4 @@ module.exports = (function() {
   });
 
   return router;
-})();
+};

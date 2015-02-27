@@ -1,12 +1,11 @@
-/**
- * Created by sergey on 2/2/15.
- */
-module.exports = (function() {
-  var express = require('express');
-  var router = new express.Router();
-  var auth = require('../oz.configs/auth');
+var express = require('express');
+var router = new express.Router();
+var Auth = require('../oz.configs/auth').Auth;
 
-  router.use(auth());
+module.exports.indexRouter = function indexRouter(app) {
+  var AuthInst = new Auth(app);
+  router.use(AuthInst.action());
+  AuthInst.setExclude(['/login', '/registration']);
 
   router.get('/', function (req, res) {
     console.log('INDEX');
@@ -24,4 +23,4 @@ module.exports = (function() {
   });
 
   return router;
-})();
+};
