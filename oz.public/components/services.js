@@ -67,15 +67,25 @@ oz
         });
       };
 
-      this.isAuthenticated = function() {
-        return !!Session.userID;
+      this.isAuthenticated = function(done) {
+        if (!Session.userID) {
+          userManager.getUser(null, function (error, user) {
+            if (error || !user) {
+              return done(error);
+            }
+            Session.create(user._id, user.role);
+            return done(null, Session);
+          });
+        } else {
+          return done(null, Session);
+        }
       };
 
       this.isAuthorized = function(authorizedRoles) {
         if (!angular.isArray(authorizedRoles)) {
           authorizedRoles = [authorizedRoles];
         }
-        return (this.isAuthenticated() && authorizedRoles.indexOf(Session.userRole) !== -1);
+        return (Session.userRole && (authorizedRoles.indexOf(Session.userRole) !== -1));
       };
     }
   ])

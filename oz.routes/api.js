@@ -4,7 +4,7 @@ var Auth = require('../oz.configs/auth').Auth;
 
 module.exports.apiRouter = function apiRouter(app) {
   var AuthInst = new Auth(app);
-  AuthInst.setExclude(['/api/login', '/api/create-password']);
+  AuthInst.setExclude(['/api/dashboard', '/api/login', '/api/create-password']);
   router.use(AuthInst.action());
 
   router.get('/login', function (req, res) {

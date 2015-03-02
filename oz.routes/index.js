@@ -5,7 +5,7 @@ var Auth = require('../oz.configs/auth').Auth;
 module.exports.indexRouter = function indexRouter(app) {
   var AuthInst = new Auth(app);
   router.use(AuthInst.action());
-  AuthInst.setExclude(['/login', '/registration']);
+  AuthInst.setExclude(['/', '/dashboard', '/login', '/registration']);
 
   router.get('/', function (req, res) {
     console.log('INDEX');

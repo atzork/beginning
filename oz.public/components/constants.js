@@ -18,6 +18,7 @@ oz
   .constant('USER_ROLES', {
     all: '*',
     admin: 'admin',
+    staff: 'staff',
     editor: 'editor',
     guest: 'guest'
   });

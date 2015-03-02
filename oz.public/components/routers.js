@@ -4,15 +4,19 @@
 
 var oz = oz || {};
 
-oz.config([
-  '$locationProvider', '$stateProvider', '$urlRouterProvider',
-  function($locationProvider, $stateProvider, $urlRouterProvider) {
+oz
+  .config(['$locationProvider', function($locationProvider) {
     $locationProvider.html5Mode(true);
+  }])
 
+  .config(['$stateProvider', 'USER_ROLES', function($stateProvider, USER_ROLES) {
     $stateProvider
       .state('app', {
         abstract: true,
         url: '',
+        data: {
+          authRoles: [USER_ROLES.admin, USER_ROLES.staff]
+        },
         views: {
           '@': {
             template: '<ui-view />'
@@ -27,7 +31,10 @@ oz.config([
       })
       .state('app.dashboard', {
         url: '/dashboard',
-        templateUrl: '/components/dashboard/dashboard.html'
+        templateUrl: '/components/dashboard/dashboard.html',
+        data: {
+          accessAllow: true
+        }
       })
       .state('app.about', {
         url: '/about',
@@ -45,7 +52,10 @@ oz.config([
       .state('app.login', {
         url: '/login',
         templateUrl: '/api/login',
-        controller: 'AuthenticateCtrl'
+        controller: 'AuthenticateCtrl',
+        data: {
+          accessAllow: true
+        }
       })
       .state('app.create-password', {
         url: '/create-password/:code',
@@ -54,8 +64,11 @@ oz.config([
         },
         controller: 'CreatePasswordController'
       });
+  }])
 
+  .config(['$urlRouterProvider', function($urlRouterProvider) {
     $urlRouterProvider
+      .when('/', '/dashboard')
       .otherwise(function($injector) {
         var userManager = $injector.get('userManager');
         var Session = $injector.get('Session');
@@ -73,5 +86,4 @@ oz.config([
           state.go('app.dashboard');
         }
       });
-  }
-]);
+  }]);
